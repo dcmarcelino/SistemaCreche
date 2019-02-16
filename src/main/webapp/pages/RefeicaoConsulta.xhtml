@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBRefeicao.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConRefeicao"> 
+            <p:fieldset id="Refeicao" legend="Consulta de Refeição" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="refeicao" 
+                             value="#{MBRefeicao.refeicoes}" widgetVar="tabelaRefeicao" id="tbRefeicao"  > 
+
+                    <p:column headerText="Código" sortBy="#{refeicao.id_Refeicao}" filterBy="#{refeicao.id_Refeicao}">    
+                        <h:outputText value="#{refeicao.id_Refeicao}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{refeicao.ref_Descricao}" filterBy="#{refeicao.ref_Descricao}"> 
+                        <h:outputText value="#{refeicao.ref_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBRefeicao.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuDis').show();" update=":frmVisuDis:pnVisuDis"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{refeicao.id_Refeicao}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/RefeicaoCadastro.xhtml" title="Editar">
+                            <f:param name="forRefeicao" value="#{refeicao.id_Refeicao}"/>
+                            <f:param name="acaoRefeicao" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBRefeicao.buscarObjeto()}"
+                                         oncomplete="PF('dlgExcDis').show();" update=":frmExcDis:pnExcDis"
+                                         title="Excluir">
+                            <f:param name="id" value="#{refeicao.id_Refeicao}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConRefeicao" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/RefeicaoCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoRefeicao" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcDis" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Refeição</f:facet>
+            <h:form id="frmExcDis">
+                <h:panelGrid id="pnExcDis" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRefeicao.itemSelecionado.id_Refeicao}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRefeicao.itemSelecionado.ref_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBRefeicao.excluir(MBRefeicao.itemSelecionado.id_Refeicao)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcDis').hide();
+                                     PF('tabelaRefeicao').clearFilters();" update=":msgGlobal :frmConRefeicao:tbRefeicao"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcDis').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConRefeicao:tbRefeicao" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+        <p:dialog widgetVar="dlgVisuDis" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Refeição</f:facet>
+            <h:form id="frmVisuDis">
+                <h:panelGrid id="pnVisuDis" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRefeicao.itemSelecionado.id_Refeicao}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRefeicao.itemSelecionado.ref_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuDis').hide(); PF('tabelaRefeicao').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConRefeicao:tbRefeicao" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+    </ui:define>
+</ui:composition>

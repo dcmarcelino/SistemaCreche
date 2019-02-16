@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBuf.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConUF"> 
+            <p:fieldset id="UF" legend="Consulta de Estado" style="margin-top:10px">
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="uf" 
+                             value="#{MBuf.ufs}" widgetVar="tabelaUF" id="tbUF" > 
+
+                    <p:column headerText="Código" sortBy="#{uf.id_UF}" filterBy="#{uf.id_UF}">    
+                        <h:outputText value="#{uf.id_UF}" />
+                    </p:column>
+
+                    <p:column headerText="Estado" sortBy="#{uf.UF_Descricao}" filterBy="#{uf.UF_Descricao}"> 
+                        <h:outputText value="#{uf.UF_Descricao}" />
+                    </p:column>
+                    
+                    <p:column headerText="Silga" sortBy="#{uf.UF_Sigla}" style="text-align: center"> 
+                        <h:outputText value="#{uf.UF_Sigla}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBuf.buscarObjeto()}" 
+                                         oncomplete="PF('dlgVisuUF').show();" update=":frmVisuUF:pnVisuUF" 
+                                         title="Visualizar">
+                            <f:param name="id" value="#{uf.id_UF}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/UFCadastro.xhtml" title="Editar">
+                            <f:param name="forUF" value="#{uf.id_UF}"/>
+                            <f:param name="acaoUF" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBuf.buscarObjeto()}"
+                                         oncomplete="PF('dlgExcUF').show();" update=":frmExcUF:pnExcUF" 
+                                         title="Excluir">
+                            <f:param name="id" value="#{uf.id_UF}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable> 
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="4" id="pnConUF" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/UFCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoUF" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcUF" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Estado</f:facet>
+            <h:form id="frmExcUF">
+                <h:panelGrid id="pnExcUF" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBuf.itemSelecionado.id_UF}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBuf.itemSelecionado.UF_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBuf.excluir(MBuf.itemSelecionado.id_UF)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcUF').hide();
+                                     PF('tabelaUF').clearFilters();" update=":msgGlobal :frmConUF:tbUF"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcUF').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConUF:tbUF" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+        <p:dialog widgetVar="dlgVisuUF" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header">Visualização de Estado</f:facet>
+            <h:form id="frmVisuUF">
+                <h:panelGrid id="pnVisuUF" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBuf.itemSelecionado.id_UF}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBuf.itemSelecionado.UF_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuUF').hide(); PF('tabelaUF').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConUF:tbUF" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+
+    </ui:define>
+</ui:composition>

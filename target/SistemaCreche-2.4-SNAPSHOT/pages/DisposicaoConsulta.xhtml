@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBDisposicao.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConDisposicao"> 
+            <p:fieldset id="Disposicao" legend="Consulta de Disposição" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="disposicao" 
+                             value="#{MBDisposicao.disposicoes}" widgetVar="tabelaDisposicao" id="tbDisposicao"  > 
+
+                    <p:column headerText="Código" sortBy="#{disposicao.id_Disposicao}" filterBy="#{disposicao.id_Disposicao}">    
+                        <h:outputText value="#{disposicao.id_Disposicao}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{disposicao.dis_Descricao}" filterBy="#{disposicao.dis_Descricao}"> 
+                        <h:outputText value="#{disposicao.dis_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBDisposicao.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuDis').show();" update=":frmVisuDis:pnVisuDis"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{disposicao.id_Disposicao}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/DisposicaoCadastro.xhtml" title="Editar">
+                            <f:param name="forDisposicao" value="#{disposicao.id_Disposicao}"/>
+                            <f:param name="acaoDisposicao" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBDisposicao.buscarObjeto()}"
+                                         oncomplete="PF('dlgExcDis').show();" update=":frmExcDis:pnExcDis"
+                                         title="Excluir">
+                            <f:param name="id" value="#{disposicao.id_Disposicao}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConDisposicao" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/DisposicaoCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoDisposicao" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcDis" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Disposição</f:facet>
+            <h:form id="frmExcDis">
+                <h:panelGrid id="pnExcDis" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBDisposicao.itemSelecionado.id_Disposicao}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBDisposicao.itemSelecionado.dis_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBDisposicao.excluir(MBDisposicao.itemSelecionado.id_Disposicao)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcDis').hide();
+                                     PF('tabelaDisposicao').clearFilters();" update=":msgGlobal :frmConDisposicao:tbDisposicao"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcDis').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConDisposicao:tbDisposicao" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+        <p:dialog widgetVar="dlgVisuDis" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Disposição</f:facet>
+            <h:form id="frmVisuDis">
+                <h:panelGrid id="pnVisuDis" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBDisposicao.itemSelecionado.id_Disposicao}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBDisposicao.itemSelecionado.dis_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuDis').hide(); PF('tabelaDisposicao').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConDisposicao:tbDisposicao" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+    </ui:define>
+</ui:composition>

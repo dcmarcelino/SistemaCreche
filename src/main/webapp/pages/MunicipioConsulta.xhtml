@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBMunicipio.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConMunicipio"> 
+            <p:fieldset id="Municipio" legend="Consulta de Municipio" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="municipio" 
+                             value="#{MBMunicipio.municipios}" widgetVar="tabelaMunicipio" id="tbMunicipio"  > 
+
+                    <p:column headerText="Código" sortBy="#{municipio.id_Municipio}" style="text-align: center" 
+                              filterBy="#{municipio.id_Municipio}">    
+                        <h:outputText value="#{municipio.id_Municipio}" />
+                    </p:column>
+
+                    <p:column headerText="Municipio" sortBy="#{municipio.mun_Descricao}" filterBy="#{municipio.mun_Descricao}"> 
+                        <h:outputText value="#{municipio.mun_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="UF" sortBy="#{municipio.uf.UF_Descricao}" 
+                              filterBy="#{municipio.uf.UF_Descricao}" style="text-align: center"> 
+                        <h:outputText value="#{municipio.uf.UF_Descricao} - #{municipio.uf.UF_Sigla}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBMunicipio.buscarObjeto()}" 
+                                         oncomplete="PF('dlgVisuMun').show();" update=":frmVisuMun:pnVisuMun"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{municipio.id_Municipio}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/MunicipioCadastro.xhtml" title="Editar">
+                            <f:param name="forMunicipio" value="#{municipio.id_Municipio}"/>
+                            <f:param name="acaoMunicipio" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBMunicipio.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcMun').show();" update=":frmExcMun:pnExcMun"
+                                         title="Excluir">
+                            <f:param name="id" value="#{municipio.id_Municipio}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="4" id="pnConMunicipio" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/MunicipioCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoMunicipio" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcMun" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Municipio</f:facet>
+            <h:form id="frmExcMun">
+                <h:panelGrid id="pnExcMun" columns="2"  cellspacing="8">
+                    <p:outputLabel value="Código:"/>
+                    <h:outputText value="#{MBMunicipio.itemSelecionado.id_Municipio}"/>
+
+                    <p:outputLabel value="Municipio:"/>
+                    <h:outputText value="#{MBMunicipio.itemSelecionado.mun_Descricao}"/> 
+
+                    <p:outputLabel value="UF:"/>
+                    <h:outputText value="#{MBMunicipio.itemSelecionado.uf.UF_Descricao}"/>
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBMunicipio.excluir(MBMunicipio.itemSelecionado.id_Municipio)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcMun').hide();
+                                     PF('tabelaMunicipio').clearFilters();" update=":msgGlobal :frmConMunicipio:tbMunicipio"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcMun').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConMunicipio:tbMunicipio" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuMun" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Municipio</f:facet>
+            <h:form id="frmVisuMun">
+                <h:panelGrid id="pnVisuMun" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBMunicipio.itemSelecionado.id_Municipio}"/>
+
+                    <p:outputLabel value="Municipio:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBMunicipio.itemSelecionado.mun_Descricao}"/> 
+
+                    <p:outputLabel value="UF:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBMunicipio.itemSelecionado.uf.UF_Descricao}"/>
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuMun').hide(); PF('tabelaMunicipio').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConMunicipio:tbMunicipio" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+
+    </ui:define>
+</ui:composition>

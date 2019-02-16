@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBSituacao_Ref.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConSituacao_Ref"> 
+            <p:fieldset id="Situacao_Ref" legend="Consulta de Situação da Refeição" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="situacao_Ref" 
+                             value="#{MBSituacao_Ref.situacoes_Ref}" widgetVar="tabelaSituacao_Ref" id="tbSituacao_Ref"  > 
+
+                    <p:column headerText="Código" sortBy="#{situacao_Ref.id_Situacao_Ref}" filterBy="#{situacao_Ref.id_Situacao_Ref}">    
+                        <h:outputText value="#{situacao_Ref.id_Situacao_Ref}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{situacao_Ref.sit_Descricao}" filterBy="#{situacao_Ref.sit_Descricao}"> 
+                        <h:outputText value="#{situacao_Ref.sit_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBSituacao_Ref.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuDis').show();" update=":frmVisuDis:pnVisuDis"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{situacao_Ref.id_Situacao_Ref}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/SituacaoRefeicaoCadastro.xhtml" title="Editar">
+                            <f:param name="forSituacao_Ref" value="#{situacao_Ref.id_Situacao_Ref}"/>
+                            <f:param name="acaoSituacao_Ref" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBSituacao_Ref.buscarObjeto()}"
+                                         oncomplete="PF('dlgExcDis').show();" update=":frmExcDis:pnExcDis"
+                                         title="Excluir">
+                            <f:param name="id" value="#{situacao_Ref.id_Situacao_Ref}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConSituacao_Ref" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/Situacao_RefCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoSituacao_Ref" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcDis" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Situação da Refeição</f:facet>
+            <h:form id="frmExcDis">
+                <h:panelGrid id="pnExcDis" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBSituacao_Ref.itemSelecionado.id_Situacao_Ref}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBSituacao_Ref.itemSelecionado.sit_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBSituacao_Ref.excluir(MBSituacao_Ref.itemSelecionado.id_Situacao_Ref)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcDis').hide();
+                                     PF('tabelaSituacao_Ref').clearFilters();" update=":msgGlobal :frmConSituacao_Ref:tbSituacao_Ref"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcDis').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConSituacao_Ref:tbSituacao_Ref" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+        <p:dialog widgetVar="dlgVisuDis" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Situação da Refeição</f:facet>
+            <h:form id="frmVisuDis">
+                <h:panelGrid id="pnVisuDis" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBSituacao_Ref.itemSelecionado.id_Situacao_Ref}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBSituacao_Ref.itemSelecionado.sit_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuDis').hide(); PF('tabelaSituacao_Ref').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConSituacao_Ref:tbSituacao_Ref" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+    </ui:define>
+</ui:composition>

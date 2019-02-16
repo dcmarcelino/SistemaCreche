@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBRefeicao.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadRefeicao"> 
+            <p:fieldset id="Refeicao" legend="#{MBRefeicao.nomearTitulo()}" style="margin-top:10px">
+                <h:panelGrid columns="2" id="pnCadRefeicao" >
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRefeicao.refeicao.id_Refeicao}" />
+                    <p:outputLabel value="Descrição:"/>
+                    <p:inputText maxlength="45" size="40" value="#{MBRefeicao.refeicao.ref_Descricao}" 
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira a descrição">
+
+                    </p:inputText>
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBRefeicao.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadRefeicao:pnCadRefeicao" 
+                                 rendered="#{MBRefeicao.acao == 'novo'}"
+                                 action="#{MBRefeicao.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBRefeicao.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadRefeicao:pnCadRefeicao " 
+                                 rendered="#{MBRefeicao.acao == 'editar'}"
+                                 action="#{MBRefeicao.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/RefeicaoConsulta.xhtml" title="Voltar" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

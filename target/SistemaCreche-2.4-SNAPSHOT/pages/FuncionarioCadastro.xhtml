@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBFuncionario.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>          
+
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadFuncionario"> 
+            <p:fieldset id="Funcionario" legend="#{MBFuncionario.nomearTitulo()}" style="margin-top:10px">
+                <h:panelGrid columns="4" id="pnCadFuncionario">
+
+                    <p:outputLabel value="Situação:"/>
+                    <p:selectBooleanCheckbox itemLabel="Ativo"  value="#{MBFuncionario.funcionario.pessoa.situacao}"/>
+
+                    <p:outputLabel value="Matricula:"/>
+                    <p:inputText maxlength="10" size="10" readonly="true" 
+                                 value="#{MBFuncionario.funcionario.matricula_Func}"/>
+
+                    <p:outputLabel value="Nome:"/>
+                    <p:inputText maxlength="45" size="40" style="text-transform: uppercase" 
+                                 value="#{MBFuncionario.funcionario.pessoa.nome}" 
+                                 required="true" requiredMessage="Insira o Nome" />
+
+                    <p:outputLabel value="Nascimento:"/>
+                    <p:calendar id="dtNasc" pattern="dd/MM/yyyy" label="Data de Nascimento" 
+                                value="#{MBFuncionario.funcionario.pessoa.dt_Nasc}"
+                                required="true" requiredMessage="Insira a Data de Nascimento">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        <p:tooltip for="dtNasc" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="CPF:"/>
+                    <p:inputMask mask="999.999.999-99" maxlength="14" size="15" 
+                                 value="#{MBFuncionario.funcionario.pessoa.cpf}"
+                                 required="true" requiredMessage="Insira o CPF"/>
+
+                    <p:outputLabel value="RG:"/>
+                    <p:inputMask mask="99.999.999-9" maxlength="12" size="15"
+                                 value="#{MBFuncionario.funcionario.pessoa.rg}"
+                                 required="true" requiredMessage="Insira o RG"/>
+
+                    <p:outputLabel value="Função:"/>
+                    <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
+                                 value="#{MBFuncionario.funcionario.funcao}"
+                                 required="true" requiredMessage="Insira a Função"/>
+
+                    <p:outputLabel value="Rua:"/>
+                    <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
+                                 value="#{MBFuncionario.funcionario.pessoa.rua}"
+                                 required="true" requiredMessage="Insira a Rua"/>
+
+                    <p:outputLabel value="Numero:"/>
+                    <p:inputText maxlength="8" size="10" 
+                                 value="#{MBFuncionario.funcionario.pessoa.numero}"
+                                 required="true" requiredMessage="Insira o Numero"/>
+
+                    <p:outputLabel value="Complemento:" />
+                    <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
+                                 value="#{MBFuncionario.funcionario.pessoa.complemento}"/>
+
+                    <p:outputLabel value="Bairro:"/>
+                    <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
+                                 value="#{MBFuncionario.funcionario.pessoa.bairro}"
+                                 required="true" requiredMessage="Insira o Bairro"/>
+
+                    <p:outputLabel value="CEP:"/>
+                    <p:inputMask mask="99999-999" maxlength="9" size="10"
+                                 value="#{MBFuncionario.funcionario.pessoa.cep}"
+                                 required="true" requiredMessage="Insira o CEP"/>
+
+                    <p:outputLabel value="Telefone 1:"/>
+                    <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
+                                 value="#{MBFuncionario.funcionario.pessoa.telefone1}"
+                                 required="true" requiredMessage="Insira o Telefone 1"/>
+
+                    <p:outputLabel value="Telefone 2:"/>
+                    <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
+                                 value="#{MBFuncionario.funcionario.pessoa.telefone2}"
+                                 required="true" requiredMessage="Insira o Telefone 1"/>
+
+                    <p:outputLabel value="Municipio:"/>
+                    <p:selectOneMenu id="municipio" value="#{MBFuncionario.funcionario.pessoa.municipio}" converter="converterMunicipio"
+                                     required="true" requiredMessage="Insira um Municipio" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBFuncionario.municipios}" var="municipio"       
+                                       itemLabel="#{municipio.mun_Descricao}" itemValue="#{municipio}"/>      
+                    </p:selectOneMenu>    
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBFuncionario.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadFuncionario:pnCadFuncionario" 
+                                 rendered="#{MBFuncionario.acao == 'novo'}" action="#{MBFuncionario.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBFuncionario.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadFuncionario:pnCadFuncionario" 
+                                 rendered="#{MBFuncionario.acao == 'editar'}" action="#{MBFuncionario.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/FuncionarioConsulta.xhtml" title="Voltar" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBAluno.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmConAluno"> 
+            <p:fieldset id="Aluno" legend="Consulta de Aluno" 
+                        style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="aluno" 
+                             value="#{MBAluno.alunos}" widgetVar="tabelaAluno" id="tbAluno"  > 
+
+                    <p:column headerText="Matrícula" sortBy="#{aluno.matricula_Aluno}" filterBy="#{aluno.matricula_Aluno}"
+                              width="15%" style="text-align: center">    
+                        <h:outputText value="#{aluno.matricula_Aluno}" />
+                    </p:column>
+
+                    <p:column headerText="Situação" sortBy="#{aluno.pessoa.situacao}" filterBy="#{aluno.pessoa.situacao}" 
+                              width="10%" style="text-align: center">    
+                        <h:outputText value="#{aluno.pessoa.ativoFormatado}" />
+                    </p:column>
+
+                    <p:column headerText="Nome" sortBy="#{aluno.pessoa.nome}" filterBy="#{aluno.pessoa.nome}"> 
+                        <h:outputText value="#{aluno.pessoa.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Turno" sortBy="#{aluno.turno.tur_Descricao}" filterBy="#{aluno.turno.tur_Descricao}"
+                               width="20%" style="text-align: center"> 
+                        <h:outputText value="#{aluno.turno.tur_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" width="20%" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBAluno.buscarObjeto()}" 
+                                         oncomplete="PF('dlgVisuAlu').show();" update=":frmVisuAlu:pnVisuAlu"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{aluno.matricula_Aluno}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/AlunoCadastro.xhtml" title="Editar">
+                            <f:param name="forAluno" value="#{aluno.matricula_Aluno}"/>
+                            <f:param name="acaoAluno" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBAluno.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcAlu').show();" update=":frmExcAlu:pnExcAlu"
+                                         title="Excluir">
+                            <f:param name="id" value="#{aluno.matricula_Aluno}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConAluno" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/AlunoCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoAluno" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcAlu" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Aluno</f:facet>
+            <h:form id="frmExcAlu">
+                <h:panelGrid id="pnExcAlu" columns="2" cellspacing="8"  >
+                    <p:outputLabel value="Matrícula:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.matricula_Aluno}"/>
+
+                    <p:outputLabel value="Situação:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.situacao}"/>
+
+                    <p:outputLabel value="Nome:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.nome}"/> 
+
+                    <p:outputLabel value="Turno:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.turno.tur_Descricao}"/>
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBAluno.excluir(MBAluno.itemSelecionado.matricula_Aluno)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcAlu').hide();
+                                     PF('tabelaAluno').clearFilters();" update=":msgGlobal :frmConAluno:tbAluno"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcAlu').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConAluno:tbAluno" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuAlu" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Aluno</f:facet>
+            <h:form id="frmVisuAlu">
+                <h:panelGrid id="pnVisuAlu" columns="4" cellspacing="8"  >
+ 
+                    <p:outputLabel value="Matricula:"  style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.matricula_Aluno}"/>
+
+                    <p:outputLabel value="Nome:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.nome}"/>
+
+                    <p:outputLabel value="Situação:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.situacao}"/>
+
+                    <p:outputLabel value="Turno:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.turno.tur_Descricao}"/>
+
+                    <p:outputLabel value="Nascimento:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.dt_Nasc}"/>
+
+                    <p:outputLabel value="CPF:" style="font-weight:bold"/> 
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.cpf}"/>
+
+                    <p:outputLabel value="RG:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.rg}"/>
+
+                    <p:outputLabel value="Mãe:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.nome_Mae}"/>
+
+                    <p:outputLabel value="CPF Mãe:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.cpf_Mae}"/>
+
+                    <p:outputLabel value="Pai:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.nome_pai}"/>
+
+                    <p:outputLabel value="CPF Pai:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.cpf_Pai}"/>
+
+                    <p:outputLabel value="Restrição Alimentar:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.rest_Alimentar}"/>
+
+                    <p:outputLabel value="Restrição Medicamento:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.rest_Medicamento}"/>
+
+                    <p:outputLabel value="Rua:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.rua}"/>
+
+                    <p:outputLabel value="Numero:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.numero}"/>
+
+                    <p:outputLabel value="Complemento:" style="font-weight:bold" />
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.complemento}"/>
+
+                    <p:outputLabel value="Bairro:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.bairro}"/>
+
+                    <p:outputLabel value="CEP:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.cep}"/>
+
+                    <p:outputLabel value="Telefone 1:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.telefone1}"/>
+
+                    <p:outputLabel value="Telefone 2:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.telefone2}"/>
+
+                    <p:outputLabel value="Municipio:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.municipio.mun_Descricao}"/>
+
+                    <p:outputLabel value="UF:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.municipio.uf.UF_Descricao}"/>
+                </h:panelGrid>
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuAlu').hide(); PF('tabelaAluno').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConAluno:tbAluno" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+    </ui:define>
+</ui:composition>

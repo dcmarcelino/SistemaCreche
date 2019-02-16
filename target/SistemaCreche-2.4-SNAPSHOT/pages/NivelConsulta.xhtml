@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBNivel_Escolar.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmConNivel"> 
+            <p:fieldset id="Nivel" legend="Consulta de Nivel" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="nivel" 
+                             value="#{MBNivel_Escolar.niveis}" widgetVar="tabelaNivel" id="tbNivel"> 
+
+                    <p:column headerText="Código" sortBy="#{nivel.id_Nivel}" filterBy="#{nivel.id_Nivel}"> 
+                        <h:outputText value="#{nivel.id_Nivel}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{nivel.descricao_NE}" filterBy="#{nivel.descricao_NE}" >  
+                        <h:outputText value="#{nivel.descricao_NE}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBNivel_Escolar.buscarObjeto()}" 
+                                         oncomplete="PF('dlgVisuNiv').show();" update=":frmVisuNiv:pnVisuNiv"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{nivel.id_Nivel}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/NivelCadastro.xhtml" title="Editar">
+                            <f:param name="forNivel" value="#{nivel.id_Nivel}"/>
+                            <f:param name="acaoNivel" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBNivel_Escolar.buscarObjeto()}"  
+                                         oncomplete="PF('dlgExcNiv').show();" update=":frmExcNiv:pnExcNiv" 
+                                         title="Excluir">
+                            <f:param name="id" value="#{nivel.id_Nivel}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="4" id="pnConNivel" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/NivelCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoNivel" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcNiv" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Nivel Escolar</f:facet>
+            <h:form id="frmExcNiv">
+                <h:panelGrid id="pnExcNiv" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBNivel_Escolar.itemSelecionado.id_Nivel}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBNivel_Escolar.itemSelecionado.descricao_NE}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBNivel_Escolar.excluir(MBNivel_Escolar.itemSelecionado.id_Nivel)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcNiv').hide();
+                                     PF('tabelaNivel').clearFilters();" update=":msgGlobal :frmConNivel:tbNivel"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcNiv').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConNivel:tbNivel" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuNiv" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Nivel Escolar</f:facet>
+            <h:form id="frmVisuNiv">
+                <h:panelGrid id="pnVisuNiv" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBNivel_Escolar.itemSelecionado.id_Nivel}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBNivel_Escolar.itemSelecionado.descricao_NE}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuNiv').hide(); PF('tabelaNivel').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConNivel:tbNivel" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+    </ui:define>
+</ui:composition>

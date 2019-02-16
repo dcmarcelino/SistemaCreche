@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBTextura.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadTextura"> 
+            <p:fieldset id="Textura" legend="#{MBTextura.nomearTitulo()}" style="margin-top:10px">
+                <h:panelGrid columns="2" id="pnCadTextura" >
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBTextura.textura.id_Textura}" />
+                    
+                    <p:outputLabel value="Descrição:"/>
+                    <p:inputText maxlength="20" size="20" value="#{MBTextura.textura.tex_Descricao}" 
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira a descrição">
+                    </p:inputText>
+                    
+                    <p:outputLabel value="Observação:"/>
+                    <p:inputText maxlength="100" size="40" value="#{MBTextura.textura.tex_Observacao}" 
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira a observação">
+                    </p:inputText>
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBTextura.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadTextura:pnCadTextura " 
+                                 rendered="#{MBTextura.acao == 'novo'}"
+                                 action="#{MBTextura.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBTextura.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadTextura:pnCadTextura " 
+                                 rendered="#{MBTextura.acao == 'editar'}"
+                                 action="#{MBTextura.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/TexturaConsulta.xhtml" title="Voltar" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

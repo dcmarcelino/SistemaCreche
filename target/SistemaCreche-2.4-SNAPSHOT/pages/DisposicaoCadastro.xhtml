@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBDisposicao.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadDisposicao"> 
+            <p:fieldset id="Disposicao" legend="#{MBDisposicao.nomearTitulo()}" style="margin-top:10px">
+                <h:panelGrid columns="2" id="pnCadDisposicao" >
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBDisposicao.disposicao.id_Disposicao}" />
+                    <p:outputLabel value="Descrição:"/>
+                    <p:inputText maxlength="20" size="20" value="#{MBDisposicao.disposicao.dis_Descricao}" 
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira a descrição">
+
+                    </p:inputText>
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBDisposicao.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadDisposicao:pnCadDisposicao" 
+                                 rendered="#{MBDisposicao.acao == 'novo'}"
+                                 action="#{MBDisposicao.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBDisposicao.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadDisposicao:pnCadDisposicao " 
+                                 rendered="#{MBDisposicao.acao == 'editar'}"
+                                 action="#{MBDisposicao.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/DisposicaoConsulta.xhtml" title="Voltar" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

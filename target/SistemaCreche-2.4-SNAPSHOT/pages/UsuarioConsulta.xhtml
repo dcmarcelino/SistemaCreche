@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBUsuario.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConUsuario"> 
+            <p:fieldset id="Usuario" legend="Consulta de Usuario" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="usuario" 
+                             value="#{MBUsuario.usuarios}" widgetVar="tabelaUsuario" id="tbUsuario" > 
+
+                    <p:column headerText="Código" sortBy="#{usuario.id_Usuario}" filterBy="#{usuario.id_Usuario}"
+                              width="22%" style="text-align: center">    
+                        <h:outputText value="#{usuario.id_Usuario}" />
+                    </p:column>
+
+                    <p:column headerText="Login" sortBy="#{usuario.login}" filterBy="#{usuario.login}"> 
+                        <h:outputText value="#{usuario.login}" />
+                    </p:column>
+
+                    <p:column headerText="Categoria" sortBy="#{usuario.categoria}" filterBy="#{usuario.categoria}"
+                              width="25%" style="text-align: center"> 
+                        <h:outputText value="#{usuario.categoria}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" width="20%" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBUsuario.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuUsu').show();" update=":frmVisuUsu:pnVisuUsu"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{usuario.id_Usuario}"/>
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-pencil" actionListener="#{MBUsuario.buscarObjeto()}"
+                                         oncomplete="PF('dlg').show();" update=":frmCadUsuario:pnCadUsuario"
+                                         title="Editar">
+                            <f:param name="id" value="#{usuario.id_Usuario}"/>
+
+                        </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBUsuario.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcUsu').show();" update=":frmExcUsu:pnExcUsu"
+                                         title="Excluir">
+                            <f:param name="id" value="#{usuario.id_Usuario}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+            <h:panelGrid columns="1" id="pnConUsuario" width="100%" style="text-align: center">
+                <p:commandButton value="Novo" icon="ui-icon-document" oncomplete="PF('dlg').show();"
+                                 title="Novo" >
+                    <f:param name="acaoUsuario" value="novo" />
+                    <f:actionListener
+                        type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                </p:commandButton>
+            </h:panelGrid >
+        </h:form>
+
+        <p:dialog widgetVar="dlgExcUsu" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Usuario</f:facet>
+            <h:form id="frmExcUsu">
+                <h:panelGrid id="pnExcUsu" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.id_Usuario}"/>
+
+                    <p:outputLabel value="Login:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.login}"/> 
+
+                    <p:outputLabel value="Categoria:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.categoria}"/>
+
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBUsuario.excluir(MBUsuario.usuario.id_Usuario)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcUsu').hide();
+                                     PF('tabelaUsuario').clearFilters();" update=":msgGlobal :frmConUsuario:tbUsuario"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcUsu').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConUsuario:tbUsuario" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuUsu" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Usuario</f:facet>
+            <h:form id="frmVisuUsu">
+                <h:panelGrid id="pnVisuUsu" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.id_Usuario}"/>
+
+                    <p:outputLabel value="Login:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.login}"/> 
+
+                    <p:outputLabel value="Categoria:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.categoria}"/>
+
+                    <p:outputLabel value="Código Categoria:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBUsuario.usuario.cod_Categoria}"/>
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuUsu').hide(); PF('tabelaUsuario').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConUsuario:tbUsuario" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlg" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Cadastro de Usuario</f:facet>
+            <h:form id="frmCadUsuario" enctype="multipart/form-data"> 
+                <p:fieldset id="Usuario"  style="margin-top:10px">
+                    <h:panelGrid columns="2" id="pnCadUsuario" >
+                        <p:outputLabel value="Código:"/>
+                        <p:inputText maxlength="20" size="10" readonly="true" value="#{MBUsuario.usuario.id_Usuario}" />
+
+                        <p:outputLabel value="Login:"/>
+                        <p:inputText maxlength="20" size="20" value="#{MBUsuario.usuario.login}" 
+                                     required="true" requiredMessage="Insira o Login">
+                        </p:inputText> 
+                        <p:outputLabel value="Senha:"/>
+                        <p:password maxlength="20" size="20" value="#{MBUsuario.usuario.senha}" 
+                                    required="true" requiredMessage="Insira a Senha" />
+                        <p:outputLabel value="Categoria:"/>
+
+                        <p:selectOneMenu id="cat" value="#{MBUsuario.usuario.categoria}"  
+                                         required="true" requiredMessage="Insira a Categoria"  >
+                            <f:selectItem itemLabel="Selecione" itemValue="" />
+                            <f:selectItem itemLabel="Administrador" itemValue="ADMINISTRADOR" />
+                            <f:selectItem itemLabel="Funcionário" itemValue="FUNCIONARIO" />
+                            <f:selectItem itemLabel="Usuário" itemValue="USUARIO" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Foto:" for="foto"/>
+                        <p:fileUpload id="foto" fileUploadListener="#{MBUsuario.handleFileUpload}"
+                                      update=":msgGlobal " auto="true" required="true" requiredMessage="Insira a foto"/>
+
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid columns="2">
+
+                    <p:commandButton value="Salvar" actionListener="#{MBUsuario.salvar()}" title="Salvar"
+                                     update=":msgGlobal :frmConUsuario:tbUsuario :frmCadUsuario:pnCadUsuario" />
+
+                    <p:button value="Voltar"  onclick="PF('dlg').hide();" title="Voltar" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBuf.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadUF"> 
+            <p:fieldset id="UF" legend="#{MBuf.nomearTitulo()}" style="margin-top:10px">
+
+                <h:panelGrid columns="2" id="pnCadUF" >
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBuf.uf.id_UF}" />
+                    
+                    <p:outputLabel value="Estado:"/>
+                    <p:inputText maxlength="45" size="20" value="#{MBuf.uf.UF_Descricao}" 
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira a descrição">
+
+                    </p:inputText>
+                    
+                     <p:outputLabel value="Sigla:"/>
+                     <p:inputText maxlength="2" size="20" value="#{MBuf.uf.UF_Sigla}" 
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira a sigla">
+
+                    </p:inputText>
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBuf.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadUF:pnCadUF " rendered="#{MBuf.acao == 'novo'}"
+                                 action="#{MBuf.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBuf.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadUF:pnCadUF " rendered="#{MBuf.acao == 'editar'}"
+                                 action="#{MBuf.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/UFConsulta.xhtml" title="Voltar" />
+
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:insert name="metadata" />	
+
+    <h:head>
+
+        <h:outputStylesheet library="css" name="style.css" />
+        <h:outputScript library="js" name="scripts.js" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Sistema Creche</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="msgGlobal"  />
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" header="Sistema Creche" resizable="false" closable="false"  collapsible="false" style="text-align: center">
+
+            </p:layoutUnit>
+
+            <p:layoutUnit position="west" size="200" resizable="false" closable="false" collapsible="false" >                                                     
+                <img class="img-usuario" src="http://www.issm.camacari.ba.gov.br/2015/images/padrao.jpg" alt=""  />
+                <h:form>
+                    <div class="toolbar">
+                        <p:outputLabel value="Seja bem vindo: "/>
+                        <h:outputText value="Usuário"/>
+                    </div>
+                </h:form>
+                <h:form>         
+                    <p:panelMenu>
+                        <p:submenu label="Arquivo">
+                            <p:menuitem value="Principal" outcome="/pages/Principal.xhtml"  />
+                            <p:menuitem value="Sair" />
+                        </p:submenu>
+                        <p:submenu label="Consultas"  >
+                            <p:menuitem value="Aluno" outcome="/pages/AlunoConsulta.xhtml"  />
+                            <p:menuitem value="Coloração Fezes" outcome="/pages/ColoracaoConsulta.xhtml"  />
+                            <p:menuitem value="Disposição" outcome="/pages/DisposicaoConsulta.xhtml"  />
+                            <p:menuitem value="Funcionario" outcome="/pages/FuncionarioConsulta.xhtml"  />
+                            <p:menuitem value="Municipio" outcome="/pages/MunicipioConsulta.xhtml" />
+                            <p:menuitem value="Nivel Escolar" outcome="/pages/NivelConsulta.xhtml" />
+                            <p:menuitem value="Refeiçao" outcome="/pages/RefeicaoConsulta.xhtml" />
+                            <p:menuitem value="Situação Refeiçao" outcome="/pages/SituacaoRefeicaoConsulta.xhtml" />
+                            <p:menuitem value="Textura" outcome="/pages/TexturaConsulta.xhtml" />
+                            <p:menuitem value="Turno" outcome="/pages/TurnoConsulta.xhtml" />
+                            <p:menuitem value="UF" outcome="/pages/UFConsulta.xhtml" />
+                            <p:menuitem value="Usuario" outcome="/pages/UsuarioConsulta.xhtml" />
+                        </p:submenu>
+
+                        <p:submenu label="Matriculas"  >
+
+                            <p:menuitem value="Emitir Contrato"  />
+                        </p:submenu>
+
+                        <p:submenu label="Financeiro"  >
+                            <p:menuitem value="Caixa"  />
+                        </p:submenu>
+
+                        <p:submenu label="Ajuda">
+                            <p:menuitem value="Sobre"  />
+                        </p:submenu>
+
+                    </p:panelMenu>
+                </h:form>
+
+            </p:layoutUnit>
+
+
+            <p:layoutUnit position="center" resizable="false" closable="false"  collapsible="false">
+                <ui:insert name="conteudo" />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="south" header="Copyrigth 2019 - Diego Marcelino"  style="text-align: center" resizable="false" closable="false"  collapsible="false">
+
+            </p:layoutUnit>
+        </p:layout>
+
+    </h:body>
+</html>

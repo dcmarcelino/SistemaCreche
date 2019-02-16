@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBTurno.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConTurno"> 
+            <p:fieldset id="Turno" legend="Consulta de Turno" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="turno" 
+                             value="#{MBTurno.turnos}" widgetVar="tabelaTurno" id="tbTurno" > 
+
+                    <p:column headerText="Código" sortBy="#{turno.id_Turno}" filterBy="#{turno.id_Turno}">    
+                        <h:outputText value="#{turno.id_Turno}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{turno.tur_Descricao}" filterBy="#{turno.tur_Descricao}"> 
+                        <h:outputText value="#{turno.tur_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBTurno.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuTur').show();" update=":frmVisuTur:pnVisuTur" 
+                                         title="Visualizar">
+                            <f:param name="id" value="#{turno.id_Turno}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/TurnoCadastro.xhtml" title="Editar">
+                            <f:param name="forTurno" value="#{turno.id_Turno}"/>
+                            <f:param name="acaoTur" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBTurno.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcTur').show();" update=":frmExcTur:pnExcTur" 
+                                         title="Excluir">
+                            <f:param name="id" value="#{turno.id_Turno}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="4" id="pnConTurno" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/TurnoCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoTur" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcTur" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Turno</f:facet>
+            <h:form id="frmExcTur">
+                <h:panelGrid id="pnExcTur" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurno.itemSelecionado.id_Turno}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurno.itemSelecionado.tur_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBTurno.excluir(MBTurno.itemSelecionado.id_Turno)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcTur').hide();
+                                     PF('tabelaTurno').clearFilters();" update=":msgGlobal :frmConTurno:tbTurno"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcTur').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConTurno:tbTurno" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+        <p:dialog widgetVar="dlgVisuTur" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Turno</f:facet>
+            <h:form id="frmVisuTur">
+                <h:panelGrid id="pnVisuTur" columns="2"  cellspacing="8">
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurno.itemSelecionado.id_Turno}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurno.itemSelecionado.tur_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuTur').hide(); PF('tabelaTurno').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConTurno:tbTurno" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+    </ui:define>
+</ui:composition>

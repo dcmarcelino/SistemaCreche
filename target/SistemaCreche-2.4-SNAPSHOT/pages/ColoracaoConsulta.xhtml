@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBColoracao.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConColoracao"> 
+            <p:fieldset id="Coloracao" legend="Consulta de Coloração" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="coloracao" 
+                             value="#{MBColoracao.coloracoes}" widgetVar="tabelaColoracao" id="tbColoracao" > 
+
+                    <p:column headerText="Código" sortBy="#{coloracao.id_Coloracao}" filterBy="#{coloracao.id_Coloracao}">    
+                        <h:outputText value="#{coloracao.id_Coloracao}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{coloracao.col_Descricao}" filterBy="#{coloracao.col_Descricao}"> 
+                        <h:outputText value="#{coloracao.col_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBColoracao.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuCol').show();" update=":frmVisuCol:pnVisuCol"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{coloracao.id_Coloracao}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/ColoracaoCadastro.xhtml" title="Editar">
+                            <f:param name="forColoracao" value="#{coloracao.id_Coloracao}"/>
+                            <f:param name="acaoColoracao" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBColoracao.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcCol').show();" update=":frmExcCol:pnExcCol"
+                                         title="Excluir">
+                            <f:param name="id" value="#{coloracao.id_Coloracao}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConColoracao" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/ColoracaoCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoColoracao" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcCol" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Coloração</f:facet>
+            <h:form id="frmExcCol">
+                <h:panelGrid id="pnExcCol" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBColoracao.itemSelecionado.id_Coloracao}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBColoracao.itemSelecionado.col_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBColoracao.excluir(MBColoracao.itemSelecionado.id_Coloracao)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcCol').hide();
+                                     PF('tabelaColoracao').clearFilters();" update=":msgGlobal :frmConColoracao:tbColoracao"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcCol').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConColoracao:tbColoracao" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuCol" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Coloração</f:facet>
+            <h:form id="frmVisuCol">
+                <h:panelGrid id="pnVisuCol" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBColoracao.itemSelecionado.id_Coloracao}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBColoracao.itemSelecionado.col_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuCol').hide(); PF('tabelaColoracao').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConColoracao:tbColoracao" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+    </ui:define>
+</ui:composition>

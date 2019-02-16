@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBMunicipio.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadMunicipio"> 
+            <p:fieldset id="Municipio" legend="#{MBMunicipio.nomearTitulo()}" style="margin-top:10px">
+
+                <h:panelGrid columns="2" id="pnCadMunicipio">
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBMunicipio.municipio.id_Municipio}"/>
+                    <p:outputLabel value="Descrição:"/>
+                    <p:inputText maxlength="20" size="20" value="#{MBMunicipio.municipio.mun_Descricao}"
+                                 style="text-transform: uppercase"
+                                 required="true" requiredMessage="Insira o Municipio">
+
+                    </p:inputText>
+
+                    <p:outputLabel value="UF:"/>
+                    <p:selectOneMenu id="uf" value="#{MBMunicipio.municipio.uf}" converter="converterUF" required="true"  
+                                     requiredMessage="Insira um Estado - UF" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBMunicipio.ufs}" var="uf"       
+                                       itemLabel="#{uf.UF_Descricao} - #{uf.UF_Sigla}" itemValue="#{uf}"/>      
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBMunicipio.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadMunicipio:pnCadMunicipio" 
+                                 rendered="#{MBMunicipio.acao == 'novo'}" action="#{MBMunicipio.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBMunicipio.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadMunicipio:pnCadMunicipio" 
+                                 rendered="#{MBMunicipio.acao == 'editar'}" action="#{MBMunicipio.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/MunicipioConsulta.xhtml" title="Voltar" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

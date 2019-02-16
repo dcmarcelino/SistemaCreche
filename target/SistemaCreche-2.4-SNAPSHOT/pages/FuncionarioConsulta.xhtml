@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBFuncionario.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmConFuncionario"> 
+            <p:fieldset id="Funcionario" legend="Consulta de Funcionário" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="funcionario" 
+                             value="#{MBFuncionario.funcionarios}" widgetVar="tabelaFuncionario" id="tbFuncionario"  > 
+
+                    <p:column headerText="Matrícula" sortBy="#{funcionario.matricula_Func}" filterBy="#{funcionario.matricula_Func}"
+                              width="15%" style="text-align: center">    
+                        <h:outputText value="#{funcionario.matricula_Func}" />
+                    </p:column>
+
+                    <p:column headerText="Situação" sortBy="#{funcionario.pessoa.situacao}" filterBy="#{funcionario.pessoa.situacao}" 
+                              width="10%" style="text-align: center">    
+                        <h:outputText value="#{funcionario.pessoa.ativoFormatado}" />
+                    </p:column>
+
+                    <p:column headerText="Nome" sortBy="#{funcionario.pessoa.nome}" filterBy="#{funcionario.pessoa.nome}"> 
+                        <h:outputText value="#{funcionario.pessoa.nome}" />
+                    </p:column>
+
+                    <p:column headerText="CPF" sortBy="#{funcionario.pessoa.cpf}" filterBy="#{funcionario.pessoa.cpf}"
+                              style="text-align: center"> 
+                        <h:outputText value="#{funcionario.pessoa.cpf}" />
+                    </p:column>
+
+                    <p:column headerText="Função" sortBy="#{funcionario.funcao}" filterBy="#{funcionario.funcao}"
+                              style="text-align: center"> 
+                        <h:outputText value="#{funcionario.funcao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções"  width="20%" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBFuncionario.buscarObjeto()}" 
+                                         oncomplete="PF('dlgVisuFun').show();" update=":frmVisuFun:pnVisuFun"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{funcionario.matricula_Func}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/FuncionarioCadastro.xhtml" title="Editar">
+                            <f:param name="forFuncionario" value="#{funcionario.matricula_Func}"/>
+                            <f:param name="acaoFuncionario" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBFuncionario.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcFun').show();" update=":frmExcFun:pnExcFun"
+                                         title="Excluir">
+                            <f:param name="id" value="#{funcionario.matricula_Func}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConFuncionario" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/FuncionarioCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoFuncionario" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcFun" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Funcionario</f:facet>
+            <h:form id="frmExcFun">
+                <h:panelGrid id="pnExcFun" columns="2" cellspacing="8"  >
+                    <p:outputLabel value="Matrícula:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.matricula_Func}"/>
+
+                    <p:outputLabel value="Nome:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.nome}"/> 
+
+                    <p:outputLabel value="CPF:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.cpf}"/>
+
+                    <p:outputLabel value="Função:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.funcao}"/>
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBFuncionario.excluir(MBFuncionario.itemSelecionado.matricula_Func)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcFun').hide();
+                                     PF('tabelaFuncionario').clearFilters();" update=":msgGlobal :frmConFuncionario:tbFuncionario"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcFun').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConFuncionario:tbFuncionario" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuFun" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Funcionario</f:facet>
+            <h:form id="frmVisuFun">
+                <h:panelGrid id="pnVisuFun" columns="4" cellspacing="8"  >
+                    <p:outputLabel value="Matricula:"  style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.matricula_Func}"/>
+
+                    <p:outputLabel value="Nome:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.nome}"/>
+
+                    <p:outputLabel value="Situação:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.ativoFormatado}"/>
+
+                    <p:outputLabel value="Nascimento:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.dt_Nasc}"/>
+
+                    <p:outputLabel value="CPF:" style="font-weight:bold"/> 
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.cpf}"/>
+
+                    <p:outputLabel value="RG:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.rg}"/>
+
+                    <p:outputLabel value="Função:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.funcao}"/>
+
+                    <p:outputLabel value="Rua:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.rua}"/>
+
+                    <p:outputLabel value="Numero:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.numero}"/>
+
+                    <p:outputLabel value="Complemento:" style="font-weight:bold" />
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.complemento}"/>
+
+                    <p:outputLabel value="Bairro:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.bairro}"/>
+
+                    <p:outputLabel value="CEP:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.cep}"/>
+
+                    <p:outputLabel value="Telefone 1:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.telefone1}"/>
+
+                    <p:outputLabel value="Telefone 2:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.telefone2}"/>
+
+                    <p:outputLabel value="Municipio:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.municipio.mun_Descricao}"/>
+
+                    <p:outputLabel value="UF:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBFuncionario.itemSelecionado.pessoa.municipio.uf.UF_Descricao}"/>
+                </h:panelGrid>
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuFun').hide(); PF('tabelaFuncionario').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConFuncionario:tbFuncionario" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+    </ui:define>
+</ui:composition>
