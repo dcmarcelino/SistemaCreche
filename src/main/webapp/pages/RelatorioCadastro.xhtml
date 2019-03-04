@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBRelatorio.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadRelatorio"> 
+            <p:fieldset id="Relatorio" legend="#{MBRelatorio.nomearTitulo()}" style="margin-top:10px">
+                <h:panelGrid columns="2" id="pnCadRelatorio" >
+                    
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.relatorio.id_Relatorio}" />
+                    
+                    <p:outputLabel value="Chegou:"/>
+                    <p:calendar id="chegada" pattern="HH:mm" label="Hora Chegada" 
+                                value="#{MBRelatorio.relatorio.hora_Chegada}"
+                            required="true" requiredMessage="Insira a Data de Chegada">
+                    <f:convertDateTime pattern="HH:mm" />
+                    <p:tooltip for="chegada" showEvent="focus" hideEvent="blur"/>
+                </p:calendar>
+                    
+                    <p:outputLabel value="Saiu:"/>
+                    <p:calendar id="saida" pattern="HH:mm" label="Hora Saída" 
+                                value="#{MBRelatorio.relatorio.hora_Saida}"
+                            required="true" requiredMessage="Insira a Data de Saída">
+                    <f:convertDateTime pattern="HH:mm" />
+                    <p:tooltip for="chegada" showEvent="focus" hideEvent="blur"/>
+                </p:calendar>
+                    
+                    <p:outputLabel value="Quem Recebeu:"/>
+                    <p:selectOneMenu id="funcionario" value="#{MBRelatorio.relatorio.funcionario}" 
+                                     converter="converterFuncionario" required="true"  
+                                     requiredMessage="Insira o funcionário que recebeu a criança" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBRelatorio.funcionarios}" var="funcionario"       
+                                       itemLabel="#{funcionario.pessoa.nome} - #{funcionario.funcao}" 
+                                       itemValue="#{funcionario}"/>      
+                    </p:selectOneMenu>
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBRelatorio.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadRelatorio:pnCadRelatorio " 
+                                 rendered="#{MBRelatorio.acao == 'novo'}"
+                                 action="#{MBRelatorio.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBRelatorio.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadRelatorio:pnCadRelatorio " 
+                                 rendered="#{MBRelatorio.acao == 'editar'}"
+                                 action="#{MBRelatorio.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/RelatorioConsulta.xhtml" title="Voltar" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

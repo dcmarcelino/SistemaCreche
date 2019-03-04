@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBRelatorio.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConRelatorio"> 
+            <p:fieldset id="Relatorio" legend="Consulta de Relatório" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="relatorio" 
+                             value="#{MBRelatorio.relatorios}" widgetVar="tabelaRelatorio" id="tbRelatorio" > 
+
+                    <p:column headerText="Código" sortBy="#{relatorio.id_Relatorio}" filterBy="#{relatorio.id_Relatorio}">    
+                        <h:outputText value="#{relatorio.id_Relatorio}" />
+                    </p:column>
+
+                    <p:column headerText="Descrição" sortBy="#{relatorio.data_Rel}" filterBy="#{relatorio.data_Rel}"> 
+                        <h:outputText value="#{relatorio.data_Rel}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBRelatorio.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuCol').show();" update=":frmVisuCol:pnVisuCol"
+                                         title="Visualizar">
+                            <f:param name="id" value="#{relatorio.id_Relatorio}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/RelatorioCadastro.xhtml" title="Editar">
+                            <f:param name="forRelatorio" value="#{relatorio.id_Relatorio}"/>
+                            <f:param name="acaoRelatorio" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBRelatorio.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcCol').show();" update=":frmExcCol:pnExcCol"
+                                         title="Excluir">
+                            <f:param name="id" value="#{relatorio.id_Relatorio}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="1" id="pnConRelatorio" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/RelatorioCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoRelatorio" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcCol" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Relatório</f:facet>
+            <h:form id="frmExcCol">
+                <h:panelGrid id="pnExcCol" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRelatorio.itemSelecionado.id_Relatorio}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRelatorio.itemSelecionado.aluno}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBRelatorio.excluir(MBRelatorio.itemSelecionado.id_Relatorio)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcCol').hide();
+                                     PF('tabelaRelatorio').clearFilters();" update=":msgGlobal :frmConRelatorio:tbRelatorio"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcCol').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConRelatorio:tbRelatorio" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuCol" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Relatório</f:facet>
+            <h:form id="frmVisuCol">
+                <h:panelGrid id="pnVisuCol" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRelatorio.itemSelecionado.id_Relatorio}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBRelatorio.itemSelecionado.aluno}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuCol').hide(); PF('tabelaRelatorio').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConRelatorio:tbRelatorio" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog>
+    </ui:define>
+</ui:composition>

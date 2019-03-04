@@ -51,7 +51,7 @@ private Date Hora_Chegada;
 private Date Hora_Saida;
 
 @Column (name="Funcionario", length=45, nullable=false)
-private String Funcionario;
+private Funcionario Funcionario;
 
 @Column (name="Trazer", length=60, nullable=true)
 private String Trazer;
@@ -120,11 +120,11 @@ private Aluno aluno;
     }
 
 
-    public String getFuncionario() {
+    public Funcionario getFuncionario() {
         return Funcionario;
     }
 
-    public void setFuncionario(String Funcionario) {
+    public void setFuncionario(Funcionario Funcionario) {
         this.Funcionario = Funcionario;
     }
 

@@ -113,13 +113,13 @@ public class GerarTabelaTeste {
 //        dao.salvar(u2);
 //        dao.salvar(u3);
 //        ---------------------------------------------     
-        TexturaDAO dao = new TexturaDAO();
-        
-        List<Textura> texturas;
-        
-        texturas = dao.listar();
-        System.out.println(texturas);
-        
+//        TexturaDAO dao = new TexturaDAO();
+//        
+////        List<Textura> texturas;
+////        
+////        texturas = dao.listar();
+////        System.out.println(texturas);
+////        
 //        Textura t = new Textura();
 //        Textura t2 = new Textura();
 //        Textura t3 = new Textura();
@@ -272,23 +272,22 @@ public class GerarTabelaTeste {
 //
 //        Municipio m = new Municipio();
 //        MunicipioDAO dao1 = new MunicipioDAO();
-//          m = dao1.buscarPorId(1L);
-//       
+//        m = dao1.buscarPorId(1L);
 //
 //        p.setNome("Daniela Marcelino");
 //        p.setBairro("Tomas Coelho");
 //        p.setCep("21381-230");
 //        p.setComplemento("CASA");
 //        p.setCpf("12312022230");
-//        p.setSituacao('A');
+//        p.setSituacao(true);
 //        p.setNumero("45");
 //        p.setRg("123435823");
 //        p.setRua("Rua Souza Pitanga");
-//        p.setTelefone("25961958");
+//        p2.setTelefone1("21982027812");
+//        p2.setTelefone2("98210001411");
 //        p.setDt_Nasc(new Date("14/09/1990"));
 //        p.setMunicipio(m);
-//        
-//        
+//
 //        p2.setMunicipio(m);
 //        p2.setNome("Roberta Barbarino");
 //        p2.setBairro("Del Castilho");
@@ -296,11 +295,12 @@ public class GerarTabelaTeste {
 //        p2.setComplemento("Apto 8552");
 //        p2.setCpf("00100025260");
 //        p2.setDt_Nasc(new Date("14/09/1990"));
-//        p2.setSituacao('A');
+//        p2.setSituacao(true);
 //        p2.setNumero("2500");
 //        p2.setRg("568533321");
 //        p2.setRua("Rua do norte Shopping");
-//        p2.setTelefone("985625533");
+//        p2.setTelefone1("21982027812");
+//        p2.setTelefone2("98210001411");
 //
 //        Funcionario f = new Funcionario();
 //        Funcionario f2 = new Funcionario();
@@ -351,7 +351,7 @@ public class GerarTabelaTeste {
 //        AlunoDAO dao = new AlunoDAO();
 //        
 //         dao.salvar(a);
-         
+
 //Usuario u = new Usuario();
 //UsuarioBean dao = new UsuarioBean();
 //
@@ -361,7 +361,6 @@ public class GerarTabelaTeste {
 //u.setSenha("123456");
 //dao.setUsuario(u);
 //dao.salvar();
-
 //        UF uf = new UF();
 //        UF uf2 = new UF();
 //        UF uf3 = new UF();
@@ -412,7 +411,6 @@ public class GerarTabelaTeste {
 //        dao2.salvar(municipio3);
 //        dao2.salvar(municipio4);
 //        dao2.salvar(municipio5);
-        
 //    String cnpj = "07923215000123";
 //    try {
 //        MaskFormatter mask = new MaskFormatter("###.###.###/####-##");
@@ -421,7 +419,6 @@ public class GerarTabelaTeste {
 //    } catch (ParseException ex) {
 //        
 //    }
-
     }
 
     @Test
