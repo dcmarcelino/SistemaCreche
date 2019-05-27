@@ -1,6 +1,7 @@
 package br.com.sistemacreche.domain;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,8 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  *
@@ -22,7 +26,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Funcionario")
 @NamedQueries({
-    @NamedQuery(name = "Funcionario.listar", query = "SELECT funcionario FROM Funcionario funcionario"),
+    @NamedQuery(name = "Funcionario.listar", query = "SELECT funcionario FROM Funcionario funcionario")
+    ,
     @NamedQuery(name = "Funcionario.buscarPorMat", query = "SELECT funcionario FROM Funcionario funcionario WHERE funcionario.Matricula_Func = :Matricula_Func")})
 public class Funcionario implements Serializable {
 

@@ -7,6 +7,7 @@ package br.com.sistemacreche.dao;
 
 import br.com.sistemacreche.domain.Relatorio;
 import br.com.sistemacreche.util.HibernateUtil;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,8 +18,8 @@ import org.hibernate.Transaction;
  * @author Dmarcelino
  */
 public class RelatorioDAO {
-    
-     /* Todos os métodos de inserção, 
+
+    /* Todos os métodos de inserção, 
      exclusão ou alteração com o banco 
      deverão conter uma transação para saber 
      se foi ou não concluído com sucesso.*/
@@ -146,5 +147,28 @@ public class RelatorioDAO {
             sessao.close();
         }
     }
-    
+
+    public List<Relatorio> listarPorData(Date data) {
+
+        String hql = "FROM Relatorio \n"
+                + "WHERE Data_Rel like :Data_Rel";
+
+        Session sessao = HibernateUtil.getSessionFactory().openSession(); //inicia a conexão com o banco
+        List<Relatorio> relatorios = null;
+
+        try {
+            relatorios = sessao.createQuery(hql).setParameter("Data_Rel", data).list();
+
+//            Query consulta = sessao.getNamedQuery("Relatorio.listarPorData"); //Executa query de listar por data
+//            consulta.setDate("Data_Rel", data);
+//            relatorios = consulta.list();
+        } catch (RuntimeException e) {
+            throw e;
+
+        } finally {
+            sessao.close();
+        }
+        return relatorios;
+
+    }
 }

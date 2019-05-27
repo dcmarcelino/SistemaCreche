@@ -8,6 +8,7 @@ package br.com.sistemacreche.domain;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
@@ -76,7 +78,7 @@ public class Pessoa implements Serializable {
     private String Cep;
 
     @Column(name = "Situacao", columnDefinition = "TINYINT", length = 1, nullable = false)
-    private boolean Situacao;
+    private boolean Situacao = true;
 
     @Column(name = "Imagem", nullable = true)
     private byte[] Imagem;
@@ -84,6 +86,10 @@ public class Pessoa implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Municipio_id_Municipio", referencedColumnName = "id_Municipio", nullable = false)
     private Municipio municipio;
+
+    @OneToOne(mappedBy = "pessoa", targetEntity = Usuario.class,
+             fetch = FetchType.EAGER)
+    private Usuario usuario;
 
     public Pessoa() {
 
@@ -230,9 +236,44 @@ public class Pessoa implements Serializable {
         return ativoFormatado;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    
+    
     @Override
     public String toString() {
         return "Pessoa{" + "id_Pessoa=" + id_Pessoa + ", Nome=" + Nome + ", Dt_Nasc=" + Dt_Nasc + ", Cpf=" + Cpf + ", Rg=" + Rg + ", Rua=" + Rua + ", Numero=" + Numero + ", Complemento=" + Complemento + ", Bairro=" + Bairro + ", Telefone1=" + Telefone1 + ", Telefone2=" + Telefone2 + ", Cep=" + Cep + ", Situacao=" + Situacao + ", municipio=" + municipio + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 61 * hash + (int) (this.id_Pessoa ^ (this.id_Pessoa >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pessoa other = (Pessoa) obj;
+        if (this.id_Pessoa != other.id_Pessoa) {
+            return false;
+        }
+        return true;
     }
 
 }

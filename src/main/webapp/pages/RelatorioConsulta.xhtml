@@ -23,89 +23,366 @@ and open the template in the editor.
         <h:form id="frmConRelatorio"> 
             <p:fieldset id="Relatorio" legend="Consulta de Relatório" style="margin-top:10px">
 
+                <p:outputLabel value="Data do Relatório:"/>
+                <p:calendar id="data" pattern="dd/MM/yyyy" label="Data do Relatório" 
+                            value="#{MBRelatorio.dataPesquisa}" 
+                            required="true" size="15" requiredMessage="Insira a Data do Relatório">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                    <p:tooltip for="data" showEvent="focus" hideEvent="blur"/>
+                </p:calendar>
+
+                <p:commandButton icon="ui-icon-search" onclick="#{MBRelatorio.buscarPorData()}" 
+                                 update=":frmConRelatorio :frmConRelatorio:tbRelatorio"
+                                 title="Pesquisar"/>
+
                 <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="relatorio" 
                              value="#{MBRelatorio.relatorios}" widgetVar="tabelaRelatorio" id="tbRelatorio" > 
 
-                    <p:column headerText="Código" sortBy="#{relatorio.id_Relatorio}" filterBy="#{relatorio.id_Relatorio}">    
+                    <p:column headerText="Código Relatório" sortBy="#{relatorio.id_Relatorio}" filterBy="#{relatorio.id_Relatorio}" 
+                              style="text-align: center"> 
                         <h:outputText value="#{relatorio.id_Relatorio}" />
                     </p:column>
 
-                    <p:column headerText="Descrição" sortBy="#{relatorio.data_Rel}" filterBy="#{relatorio.data_Rel}"> 
-                        <h:outputText value="#{relatorio.data_Rel}" />
+                    <p:column headerText="Data" sortBy="#{relatorio.data_Rel}" filterBy="#{MBRelatorio.dataPesquisa}" 
+                              style="text-align: center"> 
+                        <h:outputText value="#{MBRelatorio.getDataFormatada(relatorio.data_Rel)}" />
+                    </p:column>
+
+                    <p:column headerText="Aluno" sortBy="#{relatorio.aluno.pessoa.nome}" filterBy="#{relatorio.aluno.pessoa.nome}"
+                              style="text-align: center">    
+                        <h:outputText value="#{relatorio.aluno.pessoa.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Turma" sortBy="#{relatorio.aluno.turma.tur_Descricao}" filterBy="#{relatorio.aluno.turma.tur_Descricao}"
+                              style="text-align: center">    
+                        <h:outputText value="#{relatorio.aluno.turma.tur_Descricao}" />
                     </p:column>
 
                     <p:column headerText="Opções" style="text-align: center">
                         <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBRelatorio.buscarObjeto()}"
-                                         oncomplete="PF('dlgVisuCol').show();" update=":frmVisuCol:pnVisuCol"
+                                         oncomplete="PF('dlgVisuRel').show();" 
+                                         update=":frmVisuRel:pnVisuRel :frmVisuRel:Relatorio :frmVisuRel:pnVisuRelatorio2"
                                          title="Visualizar">
                             <f:param name="id" value="#{relatorio.id_Relatorio}"/>
                         </p:commandButton>
 
-                        <p:button icon="ui-icon-pencil" outcome="/pages/RelatorioCadastro.xhtml" title="Editar">
+                        <p:button icon="ui-icon-pencil" outcome="/pages/RelatorioCadastro.xhtml" title="Editar"
+                                  rendered="#{MBAutenticacao.exibeConteudoUsuario()}">
                             <f:param name="forRelatorio" value="#{relatorio.id_Relatorio}"/>
                             <f:param name="acaoRelatorio" value="editar"/>
                         </p:button>
 
                         <p:commandButton icon="ui-icon-trash" actionListener="#{MBRelatorio.buscarObjeto()}" 
-                                         oncomplete="PF('dlgExcCol').show();" update=":frmExcCol:pnExcCol"
+                                         oncomplete="PF('dlgExcCol').show();" update=":frmExcRel :frmExcRel:pnExcRel"
+                                         rendered="#{MBAutenticacao.exibeConteudoUsuario()}"
                                          title="Excluir">
                             <f:param name="id" value="#{relatorio.id_Relatorio}"/>
                         </p:commandButton>
                     </p:column>
 
                 </p:dataTable>
+
+                <h:panelGrid columns="4" id="pnbotao" width="100%" style="text-align: center">
+                    <p:button value="Novo" icon="ui-icon-document" outcome="/pages/RelacaoAlunos.xhtml"
+                              rendered="#{MBAutenticacao.exibeConteudoUsuario()}"
+                              title="Novo" >
+                        <f:param name="acaoTur" value="novo" />
+                    </p:button>
+                </h:panelGrid >
             </p:fieldset>
         </h:form>
 
-        <h:panelGrid columns="1" id="pnConRelatorio" width="100%" style="text-align: center">
-            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/RelatorioCadastro.xhtml"
-                      title="Novo" >
-                <f:param name="acaoRelatorio" value="novo" />
-            </p:button>
-        </h:panelGrid >
-
-        <p:dialog widgetVar="dlgExcCol" closable="false" draggable="false" resizable="false" 
+        <p:dialog widgetVar="dlgExcCol" closable="false" draggable="false" resizable="true" width="80%"
                   modal="true" appendTo="@(body)" >
             <f:facet name="header" >Exclusão de Relatório</f:facet>
-            <h:form id="frmExcCol">
-                <h:panelGrid id="pnExcCol" columns="2" cellspacing="8" >
-                    <p:outputLabel value="Código:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBRelatorio.itemSelecionado.id_Relatorio}"/>
+            <h:form id="frmExcRel">
+                <p:fieldset id="Relatorio" legend="Aluno(a): #{MBRelatorio.itemSelecionado.aluno.pessoa.nome}" style="margin-top:10px">
+                    <h:panelGrid id="pnExcRel" columns="6" cellspacing="8" >
 
-                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBRelatorio.itemSelecionado.aluno}"/> 
-                </h:panelGrid>
+                        <p:outputLabel value="Código do Relatório:"  />
+                        <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.itemSelecionado.id_Relatorio}"/>
 
-                <br/>
-                <h:panelGrid columns="2">
-                    <p:commandButton value="Excluir" actionListener="#{MBRelatorio.excluir(MBRelatorio.itemSelecionado.id_Relatorio)}"
-                                     title="Excluir"  oncomplete="PF('dlgExcCol').hide();
-                                     PF('tabelaRelatorio').clearFilters();" update=":msgGlobal :frmConRelatorio:tbRelatorio"/>
+                        <p:outputLabel value="Data do Relatório:"/>
+                        <p:inputText value="#{MBRelatorio.dataTemp}" readonly="true"/>
 
-                    <p:commandButton value="Voltar" onclick="PF('dlgExcCol').hide();" title="Voltar" 
-                                     update=":msgGlobal :frmConRelatorio:tbRelatorio" />
-                </h:panelGrid>
+
+                        <p:outputLabel value="Chegada na Creche:"/>
+                        <p:inputText value="#{MBRelatorio.horaChegadaTemp}" readonly="true"/>
+
+                        <p:outputLabel value="Saída da Creche:"/>
+                        <p:inputText value="#{MBRelatorio.horaSaidaTemp}" readonly="true"/>
+
+                        <p:outputLabel value="Quem Recebeu:"/>
+                        <p:inputText value="#{MBRelatorio.itemSelecionado.funcionario.pessoa.nome}" readonly="true"/>
+
+                        <p:outputLabel value="Disposição do Dia:"/>
+                        <p:inputText value="#{MBRelatorio.itemSelecionado.disposicao.dis_Descricao}" readonly="true"/>
+                    </h:panelGrid>
+
+                    <p:separator />
+
+                    <h:panelGrid columns="2" id="pnVisuRefRel" >
+                        <p:fieldset id="Refeicao" legend="Refeições do dia:" style="margin-top:2px" >
+
+                            <p:dataTable emptyMessage="Nenhuma Refeição Cadastrada"  scrollable="true" var="refeicao" 
+                                         value="#{MBRelatorio.itemSelecionado.refeicoes}" widgetVar="tabelaRefeicao" id="tbRefeicao" >
+
+                                <p:column headerText="Hora" sortBy="#{refeicao.hora_Ref}" style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(refeicao.hora_Ref)}h" />
+                                </p:column>
+
+                                <p:column headerText="Refeição" style="text-align: center" > 
+                                    <h:outputText value="#{refeicao.refeicao.ref_Descricao}" />
+                                </p:column>
+
+                                <p:column headerText="Situação" style="text-align: center"> 
+                                    <h:outputText value="#{refeicao.situacao.sit_Descricao}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset id="Fralda" legend="Trocas de Fralda:" style="margin-top:2px">
+                            <p:dataTable emptyMessage="Nenhuma Troca de Fralda Cadastrada"  scrollable="true"
+                                         var="fralda" value="#{MBRelatorio.itemSelecionado.fraldas}" widgetVar="tabelaFralda" id="tbFralda" >
+
+                                <p:column headerText="Hora" sortBy="#{fralda.hora_Fralda}" style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(fralda.hora_Fralda)}h"/>
+                                </p:column>
+
+                                <p:column headerText="Tipo" style="text-align: center"  > 
+                                    <h:outputText value="#{fralda.tipo}"  />
+                                </p:column>
+
+                                <p:column headerText="Textura" style="text-align: center" > 
+                                    <h:outputText value="#{fralda.textura.tex_Descricao}"  />
+                                </p:column>
+
+                                <p:column headerText="Coloração" style="text-align: center" > 
+                                    <h:outputText value="#{fralda.coloracao.col_Descricao}"  />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset id="Banho" legend="Banhos do dia:" style="margin-top:2px" >
+
+                            <p:dataTable emptyMessage="Nenhum Banho Cadastrado" scrollable="true"
+                                         var="banho" value="#{MBRelatorio.itemSelecionado.banhos}" widgetVar="tabelaBanho" id="tbBanho" >
+
+                                <p:column headerText="Hora do Banho"  style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(banho.hora_Banho)}h" />
+                                </p:column>
+
+
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset id="Remedio" legend="Remedios:" style="margin-top:20px">
+                            <p:dataTable emptyMessage="Nenhum Remedio Ministrado" scrollable="true"
+                                         var="remedio" value="#{MBRelatorio.itemSelecionado.remedios}" widgetVar="tabelaRemedio" id="tbRemedio" >
+
+                                <p:column headerText="Hora" sortBy="#{remedio.hora_Remedio}" style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(remedio.hora_Remedio)}h"/>
+                                </p:column>
+
+                                <p:column headerText="Remédio" style="text-align: center"  > 
+                                    <h:outputText value="#{remedio.remedio}"  />
+                                </p:column>
+
+                                <p:column headerText="Dosagem" style="text-align: center" > 
+                                    <h:outputText value="#{remedio.dosagem}"  />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:fieldset>
+                    </h:panelGrid>
+
+                    <p:separator />
+
+                    <h:panelGrid columns="2" id="pnVisuRelatorio2" >
+                        <p:outputLabel value="Observações do dia:"/>
+                        <p:outputLabel value="Mamãe Trazer:"/>
+
+                        <p:inputTextarea maxlength="250" rows="4" cols="60"  value="#{MBRelatorio.itemSelecionado.recado}"
+                                         style="text-transform: uppercase" readonly="true"/>
+
+
+                        <p:inputTextarea maxlength="60" rows="4" cols="60"  value="#{MBRelatorio.itemSelecionado.trazer}"
+                                         style="text-transform: uppercase" readonly="true"/>
+                    </h:panelGrid>
+
+
+                    <br/>
+                    <h:panelGrid columns="2" width="100%" style="text-align: center">
+                        <p:commandButton value="Excluir" actionListener="#{MBRelatorio.excluir(MBRelatorio.itemSelecionado.id_Relatorio)}"
+                                         title="Excluir"  oncomplete="PF('dlgExcCol').hide();
+                                         PF('tabelaRelatorio').clearFilters();" update=":msgGlobal :frmConRelatorio :frmConRelatorio:tbRelatorio"/>
+
+                        <p:commandButton value="Voltar" onclick="PF('dlgExcCol').hide();" title="Voltar" 
+                                         update=":msgGlobal :frmConRelatorio:tbRelatorio" />
+                    </h:panelGrid>
+                </p:fieldset>
             </h:form>  
         </p:dialog>
 
-        <p:dialog widgetVar="dlgVisuCol" closable="false" draggable="false" resizable="false" 
+        <p:dialog widgetVar="dlgVisuRel" closable="false" draggable="false" resizable="true" width="80%" 
                   modal="true" appendTo="@(body)" >
             <f:facet name="header" >Visualização de Relatório</f:facet>
-            <h:form id="frmVisuCol">
-                <h:panelGrid id="pnVisuCol" columns="2" cellspacing="8" >
-                    <p:outputLabel value="Código:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBRelatorio.itemSelecionado.id_Relatorio}"/>
+            <h:form id="frmVisuRel">
+                <p:fieldset id="Relatorio" legend="Aluno(a): #{MBRelatorio.itemSelecionado.aluno.pessoa.nome}" style="margin-top:10px">
+                    <h:panelGrid id="pnVisuRel" columns="6" cellspacing="8" >
 
-                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBRelatorio.itemSelecionado.aluno}"/> 
-                </h:panelGrid>
+                        <p:outputLabel value="Código do Relatório:"  />
+                        <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.itemSelecionado.id_Relatorio}"/>
+
+                        <p:outputLabel value="Data do Relatório:"/>
+                        <p:inputText value="#{MBRelatorio.dataTemp}" readonly="true"/>
+
+
+                        <p:outputLabel value="Chegada na Creche:"/>
+                        <p:inputText value="#{MBRelatorio.horaChegadaTemp}" readonly="true"/>
+
+                        <p:outputLabel value="Saída da Creche:"/>
+                        <p:inputText value="#{MBRelatorio.horaSaidaTemp}" readonly="true"/>
+
+                        <p:outputLabel value="Quem Recebeu:"/>
+                        <p:inputText value="#{MBRelatorio.itemSelecionado.funcionario.pessoa.nome}" readonly="true"/>
+
+                        <p:outputLabel value="Disposição do Dia:"/>
+                        <p:inputText value="#{MBRelatorio.itemSelecionado.disposicao.dis_Descricao}" readonly="true"/>
+                    </h:panelGrid>
+
+                    <p:separator />
+
+                    <h:panelGrid columns="2" id="pnVisuRefRel" >
+                        <p:fieldset id="Refeicao" legend="Refeições do dia:" style="margin-top:2px" >
+
+                            <p:dataTable emptyMessage="Nenhuma Refeição Cadastrada"  scrollable="true" var="refeicao" 
+                                         value="#{MBRelatorio.itemSelecionado.refeicoes}" widgetVar="tabelaRefeicao" id="tbRefeicao" >
+
+                                <p:column headerText="Hora" sortBy="#{refeicao.hora_Ref}" style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(refeicao.hora_Ref)}h" />
+                                </p:column>
+
+                                <p:column headerText="Refeição" style="text-align: center" > 
+                                    <h:outputText value="#{refeicao.refeicao.ref_Descricao}" />
+                                </p:column>
+
+                                <p:column headerText="Situação" style="text-align: center"> 
+                                    <h:outputText value="#{refeicao.situacao.sit_Descricao}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset id="Fralda" legend="Trocas de Fralda:" style="margin-top:2px">
+                            <p:dataTable emptyMessage="Nenhuma Troca de Fralda Cadastrada"  scrollable="true"
+                                         var="fralda" value="#{MBRelatorio.itemSelecionado.fraldas}" widgetVar="tabelaFralda" id="tbFralda" >
+
+                                <p:column headerText="Hora" sortBy="#{fralda.hora_Fralda}" style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(fralda.hora_Fralda)}h"/>
+                                </p:column>
+
+                                <p:column headerText="Tipo" style="text-align: center"  > 
+                                    <h:outputText value="#{fralda.tipo}"  />
+                                </p:column>
+
+                                <p:column headerText="Textura" style="text-align: center" > 
+                                    <h:outputText value="#{fralda.textura.tex_Descricao}"  />
+                                </p:column>
+
+                                <p:column headerText="Coloração" style="text-align: center" > 
+                                    <h:outputText value="#{fralda.coloracao.col_Descricao}"  />
+                                </p:column>
+
+                                <p:column headerText="Observação" style="text-align: center">
+                                    <p:commandButton icon="ui-icon-zoomin" 
+                                                     actionListener="#{MBRelatorio.obsFraldas(fralda)}"
+                                                     oncomplete="PF('dlgVisuObs').show();" 
+                                                     update=":frmVisuObs:pnObs" title="Visualizar" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset id="Banho" legend="Banhos do dia:" style="margin-top:2px" >
+
+                            <p:dataTable emptyMessage="Nenhum Banho Cadastrado" scrollable="true"
+                                         var="banho" value="#{MBRelatorio.itemSelecionado.banhos}" widgetVar="tabelaBanho" id="tbBanho" >
+
+                                <p:column headerText="Hora do Banho"  style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(banho.hora_Banho)}h" />
+                                </p:column>
+
+
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset id="Remedio" legend="Remedios:" style="margin-top:20px">
+                            <p:dataTable emptyMessage="Nenhum Remedio Ministrado" scrollable="true"
+                                         var="remedio" value="#{MBRelatorio.itemSelecionado.remedios}" widgetVar="tabelaRemedio" id="tbRemedio" >
+
+                                <p:column headerText="Hora" sortBy="#{remedio.hora_Remedio}" style="text-align: center" > 
+                                    <h:outputText value="#{MBRelatorio.getHoraFormatada(remedio.hora_Remedio)}h"/>
+                                </p:column>
+
+                                <p:column headerText="Remédio" style="text-align: center"  > 
+                                    <h:outputText value="#{remedio.remedio}"  />
+                                </p:column>
+
+                                <p:column headerText="Dosagem" style="text-align: center" > 
+                                    <h:outputText value="#{remedio.dosagem}"  />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:fieldset>
+                    </h:panelGrid>
+
+                    <p:separator />
+
+                    <h:panelGrid columns="2" id="pnVisuRelatorio2" >
+                        <p:outputLabel value="Observações do dia:"/>
+                        <p:outputLabel value="Mamãe Trazer:"/>
+
+                        <p:inputTextarea maxlength="250" rows="4" cols="60"  value="#{MBRelatorio.itemSelecionado.recado}"
+                                         style="text-transform: uppercase" readonly="true"/>
+
+
+                        <p:inputTextarea maxlength="60" rows="4" cols="60"  value="#{MBRelatorio.itemSelecionado.trazer}"
+                                         style="text-transform: uppercase" readonly="true"/>
+                    </h:panelGrid>
+                </p:fieldset>               
 
                 <br/>
-                <h:panelGrid columns="1" width="100%" style="text-align: center">
-                    <p:commandButton value="Ok" onclick="PF('dlgVisuCol').hide(); PF('tabelaRelatorio').clearFilters();" 
+                <h:panelGrid columns="1"  width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuRel').hide(); PF('tabelaRelatorio').clearFilters();" 
                                      title="Ok" update=":msgGlobal :frmConRelatorio:tbRelatorio" />
                 </h:panelGrid>
             </h:form>  
         </p:dialog>
+
+        <p:dialog widgetVar="dlgVisuObs" closable="false" draggable="false" resizable="false" width="40%"
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Observações de Troca de Fraldas</f:facet>
+            <h:form id="frmVisuObs">
+                <p:fieldset id="Obs" legend="Atenção" style="margin-top:10px">
+                    <h:panelGrid id="pnObs" columns="1"  width="100%">
+                        <p:fieldset id="Obs2" legend="Observações da Textura" style="margin-top:10px">
+                            <p:outputLabel value="#{MBRelatorio.obs}"/>
+                        </p:fieldset>
+
+                        <p:fieldset id="Obs3" legend="Observações da Troca de Fralda" style="margin-top:10px">
+                            <p:outputLabel value="#{MBRelatorio.tipo}" />
+                        </p:fieldset>
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid columns="1"  width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuObs').hide()" 
+                                     title="Ok"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 </ui:composition>

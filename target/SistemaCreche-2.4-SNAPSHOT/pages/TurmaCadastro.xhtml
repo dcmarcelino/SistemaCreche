@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBTurma.carregarCadastro()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmCadTurma"> 
+            <p:fieldset id="Turma" legend="#{MBTurma.nomearTitulo()}" style="margin-top:10px">
+
+                <h:panelGrid columns="2" id="pnCadTurma" >
+                    <p:outputLabel value="Código:"/>
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBTurma.turma.id_Turma}" />
+                    
+                    <p:outputLabel value="Turma:"/>
+                    <p:inputText maxlength="45" size="20" value="#{MBTurma.turma.tur_Descricao}" 
+                                 style="text-transform: uppercase" 
+                                 required="true" requiredMessage="Insira a Turma"/>
+                    
+                     <p:outputLabel value="Câmera:"/>
+                     <p:inputText maxlength="500" size="100" value="#{MBTurma.turma.camera}"/>
+
+                </h:panelGrid>
+            </p:fieldset>
+            <h:panelGrid columns="2">
+
+                <p:commandButton value="Salvar" actionListener="#{MBTurma.salvar()}" title="Salvar"
+                                 update=":msgGlobal :frmCadTurma:pnCadTurma " rendered="#{MBTurma.acao == 'novo'}"
+                                 action="#{MBTurma.redirecionar()}"/>
+
+                <p:commandButton value="Editar" actionListener="#{MBTurma.editar()}" title="Editar"
+                                 update=":msgGlobal :frmCadTurma:pnCadTurma " rendered="#{MBTurma.acao == 'editar'}"
+                                 action="#{MBTurma.redirecionar()}"/>
+
+                <p:button value="Voltar" outcome="/pages/TurmaConsulta.xhtml" title="Voltar" />
+
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

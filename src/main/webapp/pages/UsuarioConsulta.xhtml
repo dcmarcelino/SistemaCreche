@@ -27,28 +27,36 @@ and open the template in the editor.
                              value="#{MBUsuario.usuarios}" widgetVar="tabelaUsuario" id="tbUsuario" > 
 
                     <p:column headerText="Código" sortBy="#{usuario.id_Usuario}" filterBy="#{usuario.id_Usuario}"
-                              width="22%" style="text-align: center">    
+                              width="15%" style="text-align: center">    
                         <h:outputText value="#{usuario.id_Usuario}" />
                     </p:column>
 
-                    <p:column headerText="Login" sortBy="#{usuario.login}" filterBy="#{usuario.login}"> 
+                    <p:column headerText="Usuário" sortBy="#{usuario.pessoa.nome}" filterBy="#{usuario.pessoa.nome}"
+                              width="30%" style="text-align: center">    
+                        <h:outputText value="#{usuario.pessoa.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Login" sortBy="#{usuario.login}" filterBy="#{usuario.login}"
+                              width="25%" > 
                         <h:outputText value="#{usuario.login}" />
                     </p:column>
 
                     <p:column headerText="Categoria" sortBy="#{usuario.categoria}" filterBy="#{usuario.categoria}"
-                              width="25%" style="text-align: center"> 
+                              width="15%" style="text-align: center"> 
                         <h:outputText value="#{usuario.categoria}" />
                     </p:column>
 
                     <p:column headerText="Opções" width="20%" style="text-align: center">
                         <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBUsuario.buscarObjeto()}"
                                          oncomplete="PF('dlgVisuUsu').show();" update=":frmVisuUsu:pnVisuUsu"
+                                         rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"
                                          title="Visualizar">
                             <f:param name="id" value="#{usuario.id_Usuario}"/>
                         </p:commandButton>
 
                         <p:commandButton icon="ui-icon-pencil" actionListener="#{MBUsuario.buscarObjeto()}"
-                                         oncomplete="PF('dlg').show();" update=":frmCadUsuario:pnCadUsuario"
+                                         oncomplete="PF('dlgedt').show();" update=":frmEdiUsuario:pnEdiUsuario"
+                                         rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"
                                          title="Editar">
                             <f:param name="id" value="#{usuario.id_Usuario}"/>
 
@@ -56,6 +64,7 @@ and open the template in the editor.
 
                         <p:commandButton icon="ui-icon-trash" actionListener="#{MBUsuario.buscarObjeto()}" 
                                          oncomplete="PF('dlgExcUsu').show();" update=":frmExcUsu:pnExcUsu"
+                                         rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"
                                          title="Excluir">
                             <f:param name="id" value="#{usuario.id_Usuario}"/>
                         </p:commandButton>
@@ -64,7 +73,8 @@ and open the template in the editor.
                 </p:dataTable>
             </p:fieldset>
             <h:panelGrid columns="1" id="pnConUsuario" width="100%" style="text-align: center">
-                <p:commandButton value="Novo" icon="ui-icon-document" oncomplete="PF('dlg').show();"
+                <p:commandButton value="Novo" icon="ui-icon-document" oncomplete="PF('dlg').show();" 
+                                 rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"
                                  title="Novo" >
                     <f:param name="acaoUsuario" value="novo" />
                     <f:actionListener
@@ -93,7 +103,9 @@ and open the template in the editor.
                 <h:panelGrid columns="2">
                     <p:commandButton value="Excluir" actionListener="#{MBUsuario.excluir(MBUsuario.usuario.id_Usuario)}"
                                      title="Excluir"  oncomplete="PF('dlgExcUsu').hide();
-                                     PF('tabelaUsuario').clearFilters();" update=":msgGlobal :frmConUsuario:tbUsuario"/>
+                                     PF('tabelaUsuario').clearFilters();"
+                                     
+                                     update=":msgGlobal :frmConUsuario:tbUsuario "/>
 
                     <p:commandButton value="Voltar" onclick="PF('dlgExcUsu').hide();" title="Voltar" 
                                      update=":msgGlobal :frmConUsuario:tbUsuario" />
@@ -108,6 +120,14 @@ and open the template in the editor.
                 <h:panelGrid id="pnVisuUsu" columns="2" cellspacing="8" >
                     <p:outputLabel value="Código:" style="font-weight:bold"/>
                     <h:outputText value="#{MBUsuario.usuario.id_Usuario}"/>
+
+                    <p:outputLabel value="Usuário:"/>
+                    <p:selectOneMenu id="pessoa" value="#{MBUsuario.usuario.pessoa}" converter="converterPessoa" 
+                                     filter="true" required="true" requiredMessage="Insira o Usuario" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBUsuario.pessoas}" var="pessoa"       
+                                       itemLabel="#{pessoa.nome}" itemValue="#{pessoa}"/>      
+                    </p:selectOneMenu>  
 
                     <p:outputLabel value="Login:" style="font-weight:bold"/>
                     <h:outputText value="#{MBUsuario.usuario.login}"/> 
@@ -136,6 +156,14 @@ and open the template in the editor.
                         <p:outputLabel value="Código:"/>
                         <p:inputText maxlength="20" size="10" readonly="true" value="#{MBUsuario.usuario.id_Usuario}" />
 
+                        <p:outputLabel value="Usuário:"/>
+                        <p:selectOneMenu id="pessoa" value="#{MBUsuario.usuario.pessoa}" converter="converterPessoa" 
+                                         filter="true" required="true" requiredMessage="Insira o Usuario" >      
+                            <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                            <f:selectItems value="#{MBUsuario.pessoas}" var="pessoa"       
+                                           itemLabel="#{pessoa.nome}" itemValue="#{pessoa}"/>      
+                        </p:selectOneMenu>    
+
                         <p:outputLabel value="Login:"/>
                         <p:inputText maxlength="20" size="20" value="#{MBUsuario.usuario.login}" 
                                      required="true" requiredMessage="Insira o Login">
@@ -145,13 +173,13 @@ and open the template in the editor.
                                     required="true" requiredMessage="Insira a Senha" />
                         <p:outputLabel value="Categoria:"/>
 
-                        <p:selectOneMenu id="cat" value="#{MBUsuario.usuario.categoria}"  
-                                         required="true" requiredMessage="Insira a Categoria"  >
-                            <f:selectItem itemLabel="Selecione" itemValue="" />
+                        <p:selectOneRadio id="cat" value="#{MBUsuario.usuario.categoria}"  
+                                          required="true" requiredMessage="Insira a Categoria"  >
                             <f:selectItem itemLabel="Administrador" itemValue="ADMINISTRADOR" />
+                            <f:selectItem itemLabel="Diretor" itemValue="DIRETOR" />
                             <f:selectItem itemLabel="Funcionário" itemValue="FUNCIONARIO" />
                             <f:selectItem itemLabel="Usuário" itemValue="USUARIO" />
-                        </p:selectOneMenu>
+                        </p:selectOneRadio>
 
                         <p:outputLabel value="Foto:" for="foto"/>
                         <p:fileUpload id="foto" fileUploadListener="#{MBUsuario.handleFileUpload}"
@@ -162,7 +190,60 @@ and open the template in the editor.
                 <h:panelGrid columns="2">
 
                     <p:commandButton value="Salvar" actionListener="#{MBUsuario.salvar()}" title="Salvar"
-                                     update=":msgGlobal :frmConUsuario:tbUsuario :frmCadUsuario:pnCadUsuario" />
+                                     onsuccess="PF('dlg').hide(); PF('tabelaUsuario').clearFilters();" 
+                                     update=":msgGlobal :frmConUsuario :frmConUsuario:tbUsuario :frmCadUsuario:pnCadUsuario" />
+
+
+                    <p:button value="Voltar"  onclick="PF('dlg').hide();" title="Voltar" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgedt" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Edição de Usuario</f:facet>
+            <h:form id="frmEdiUsuario" enctype="multipart/form-data"> 
+                <p:fieldset id="Usuario"  style="margin-top:10px">
+                    <h:panelGrid columns="2" id="pnEdiUsuario" >
+                        <p:outputLabel value="Código:"/>
+                        <p:inputText maxlength="20" size="10" readonly="true" value="#{MBUsuario.usuario.id_Usuario}" />
+
+                        <p:outputLabel value="Usuário:"/>
+                        <p:selectOneMenu id="pessoa" value="#{MBUsuario.usuario.pessoa}" converter="converterPessoa" 
+                                         filter="true" required="true" requiredMessage="Insira o Usuario" >      
+                            <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                            <f:selectItems value="#{MBUsuario.pessoas}" var="pessoa"       
+                                           itemLabel="#{pessoa.nome}" itemValue="#{pessoa}"/>      
+                        </p:selectOneMenu>    
+
+                        <p:outputLabel value="Login:"/>
+                        <p:inputText maxlength="20" size="20" value="#{MBUsuario.usuario.login}" 
+                                     required="true" requiredMessage="Insira o Login">
+                        </p:inputText> 
+                        <p:outputLabel value="Senha:"/>
+                        <p:password maxlength="20" size="20" value="#{MBUsuario.usuario.senha}" 
+                                    required="true" requiredMessage="Insira a Senha" />
+                        <p:outputLabel value="Categoria:"/>
+
+                        <p:selectOneRadio id="cat" value="#{MBUsuario.usuario.categoria}"  
+                                          required="true" requiredMessage="Insira a Categoria"  >
+                            <f:selectItem itemLabel="Administrador" itemValue="ADMINISTRADOR" />
+                            <f:selectItem itemLabel="Diretor" itemValue="DIRETOR" />
+                            <f:selectItem itemLabel="Funcionário" itemValue="FUNCIONARIO" />
+                            <f:selectItem itemLabel="Usuário" itemValue="USUARIO" />
+                        </p:selectOneRadio>
+
+                        <p:outputLabel value="Foto:" for="foto"/>
+                        <p:fileUpload id="foto" fileUploadListener="#{MBUsuario.handleFileUpload}"
+                                      update=":msgGlobal " auto="true" required="true" requiredMessage="Insira a foto"/>
+
+                    </h:panelGrid>
+                </p:fieldset>
+                <h:panelGrid columns="2">
+
+                    <p:commandButton value="Editar" actionListener="#{MBUsuario.editar()}" title="Editar"
+                                     onsuccess="PF('dlg').hide(); PF('tabelaUsuario').clearFilters();" 
+                                     update=":msgGlobal  :frmConUsuario :frmConUsuario:tbUsuario :frmCadUsuario:pnCadUsuario" />
 
                     <p:button value="Voltar"  onclick="PF('dlg').hide();" title="Voltar" />
                 </h:panelGrid>

@@ -7,16 +7,22 @@ package br.com.sistemacreche.domain;
 
 import java.io.FileInputStream;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.apache.shiro.crypto.hash.SimpleHash;
 
 /**
  *
@@ -47,13 +53,17 @@ public class Usuario implements Serializable {
     @Column(name = "Cod_Categoria", length = 1, nullable = false)
     private char Cod_Categoria;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "Pessoa_id_Pessoa", referencedColumnName = "id_Pessoa", nullable = false)
+    private Pessoa pessoa;
+
     @Lob
     @Column(name = "ImgUser", nullable = true)
     private byte[] ImgUser;
 
-    @Transient
+    @Column(name = "Caminho", length = 500, nullable = true)
     private String caminho;
-   
+
     public long getId_Usuario() {
         return id_Usuario;
     }
@@ -75,6 +85,7 @@ public class Usuario implements Serializable {
     }
 
     public void setSenha(String Senha) {
+        
         this.Senha = Senha;
     }
 
@@ -108,6 +119,14 @@ public class Usuario implements Serializable {
 
     public void setCaminho(String caminho) {
         this.caminho = caminho;
+    }
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
     }
 
     @Override

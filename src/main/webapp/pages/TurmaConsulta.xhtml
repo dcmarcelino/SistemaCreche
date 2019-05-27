@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBTurma.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConTurma"> 
+            <p:fieldset id="Turma" legend="Consulta de Turma" style="margin-top:10px">
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="turma" 
+                             value="#{MBTurma.turmas}" widgetVar="tabelaTurma" id="tbTurma" > 
+
+                    <p:column headerText="Código" sortBy="#{turma.id_Turma}" filterBy="#{turma.id_Turma}"
+                              style="text-align: center">    
+                        <h:outputText value="#{turma.id_Turma}" />
+                    </p:column>
+
+                    <p:column headerText="Turma" sortBy="#{turma.tur_Descricao}" filterBy="#{turma.tur_Descricao}"
+                              style="text-align: center"> 
+                        <h:outputText value="#{turma.tur_Descricao}" />
+                    </p:column>
+                    
+                    <p:column headerText="Câmera" style="text-align: center"> 
+                        <p:button  icon="ui-icon-check" rendered="#{MBTurma.isCadastrado(turma.camera)}"/>
+                    </p:column>
+
+
+                    <p:column headerText="Opções" style="text-align: center">
+                        <p:commandButton icon="ui-icon-zoomin" actionListener="#{MBTurma.buscarObjeto()}"
+                                         oncomplete="PF('dlgVisuTur').show();" update=":frmVisuTur:pnVisuTur" 
+                                         title="Visualizar">
+                            <f:param name="id" value="#{turma.id_Turma}"/>
+                        </p:commandButton>
+
+                        <p:button icon="ui-icon-pencil" outcome="/pages/TurmaCadastro.xhtml" title="Editar">
+                            <f:param name="forTurma" value="#{turma.id_Turma}"/>
+                            <f:param name="acaoTur" value="editar"/>
+                        </p:button>
+
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{MBTurma.buscarObjeto()}" 
+                                         oncomplete="PF('dlgExcTur').show();" update=":frmExcTur:pnExcTur" 
+                                         title="Excluir">
+                            <f:param name="id" value="#{turma.id_Turma}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <h:panelGrid columns="4" id="pnConTurma" width="100%" style="text-align: center">
+            <p:button value="Novo" icon="ui-icon-document" outcome="/pages/TurmaCadastro.xhtml"
+                      title="Novo" >
+                <f:param name="acaoTur" value="novo" />
+            </p:button>
+        </h:panelGrid >
+
+        <p:dialog widgetVar="dlgExcTur" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Exclusão de Turma</f:facet>
+            <h:form id="frmExcTur">
+                <h:panelGrid id="pnExcTur" columns="2" cellspacing="8" >
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurma.itemSelecionado.id_Turma}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurma.itemSelecionado.tur_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Excluir" actionListener="#{MBTurma.excluir(MBTurma.itemSelecionado.id_Turma)}"
+                                     title="Excluir"  oncomplete="PF('dlgExcTur').hide();
+                                     PF('tabelaTurma').clearFilters();" update=":msgGlobal :frmConTurma:tbTurma"/>
+
+                    <p:commandButton value="Voltar" onclick="PF('dlgExcTur').hide();" title="Voltar" 
+                                     update=":msgGlobal :frmConTurma:tbTurma" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+        <p:dialog widgetVar="dlgVisuTur" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Visualização de Turma</f:facet>
+            <h:form id="frmVisuTur">
+                <h:panelGrid id="pnVisuTur" columns="2"  cellspacing="8">
+                    <p:outputLabel value="Código:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurma.itemSelecionado.id_Turma}"/>
+
+                    <p:outputLabel value="Descrição:" style="font-weight:bold"/>
+                    <h:outputText value="#{MBTurma.itemSelecionado.tur_Descricao}"/> 
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="1" width="100%" style="text-align: center">
+                    <p:commandButton value="Ok" onclick="PF('dlgVisuTur').hide(); PF('tabelaTurma').clearFilters();" 
+                                     title="Ok" update=":msgGlobal :frmConTurma:tbTurma" />
+
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+    </ui:define>
+</ui:composition>

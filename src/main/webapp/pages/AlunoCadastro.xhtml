@@ -21,124 +21,154 @@ and open the template in the editor.
 
     <ui:define name="conteudo">
         <h:form id="frmCadAluno" > 
-            
+
             <p:fieldset id="Aluno" legend="#{MBAluno.nomearTitulo()}" 
                         style="margin-top:10px">
-                
-            <h:panelGrid columns="4" id="pnCadAluno">
-                <p:outputLabel value="Situação:"/>
-                <p:selectBooleanCheckbox itemLabel="Ativo"  value="#{MBAluno.aluno.pessoa.situacao}"/>
-                
-                <p:outputLabel value="Turno:"/>
-                  <p:selectOneMenu id="turno" value="#{MBAluno.aluno.turno}" converter="converterTurno"
-                                 required="true" requiredMessage="Insira um Turno" >      
-                    <f:selectItem itemLabel="Selecione" itemValue=""/>      
-                    <f:selectItems value="#{MBAluno.turnos}" var="turno"       
-                                   itemLabel="#{turno.tur_Descricao}" itemValue="#{turno}"/>      
-                </p:selectOneMenu>  
 
-                <p:outputLabel value="Matricula:"/>
-                <p:inputText maxlength="10" size="10" readonly="true" 
-                             value="#{MBAluno.aluno.matricula_Aluno}"/>
-                  
-                <p:outputLabel value="Nome:"/>
-                <p:inputText maxlength="45" size="40" style="text-transform: uppercase" 
-                             value="#{MBAluno.aluno.pessoa.nome}" 
-                             required="true" requiredMessage="Insira o Nome" />
+                <h:panelGrid columns="1" id="pnCadAluno">
+                    <h:panelGrid columns="6" id="pnCadAluno2">
+                        <p:outputLabel value="Situação:"/>
+                        <p:selectBooleanCheckbox itemLabel="Ativo"  value="#{MBAluno.aluno.pessoa.situacao}"/>
 
-                <p:outputLabel value="Nascimento:"/>
-                <p:calendar id="dtNasc" pattern="dd/MM/yyyy" label="Data de Nascimento" 
-                            value="#{MBAluno.aluno.pessoa.dt_Nasc}"
-                            required="true" requiredMessage="Insira a Data de Nascimento">
-                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                    <p:tooltip for="dtNasc" showEvent="focus" hideEvent="blur"/>
-                </p:calendar>
+                        <p:outputLabel value="Matricula:"/>
+                        <p:inputText maxlength="10" size="10" readonly="true" 
+                                     value="#{MBAluno.aluno.matricula_Aluno}"/>
 
-                <p:outputLabel value="CPF:"/>
-                <p:inputMask mask="999.999.999-99" maxlength="14" size="15" 
-                             value="#{MBAluno.aluno.pessoa.cpf}"
-                             required="true" requiredMessage="Insira o CPF"/>
+                        <p:outputLabel value="Turno:"/>
+                        <p:selectOneMenu id="turno" value="#{MBAluno.aluno.turno}" converter="converterTurno"
+                                         required="true" requiredMessage="Insira um Turno" >      
+                            <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                            <f:selectItems value="#{MBAluno.turnos}" var="turno"       
+                                           itemLabel="#{turno.tur_Descricao}" itemValue="#{turno}"/>      
+                        </p:selectOneMenu>  
 
-                <p:outputLabel value="RG:"/>
-                <p:inputMask mask="99.999.999-9" maxlength="12" size="15"
-                             value="#{MBAluno.aluno.pessoa.rg}"/>
 
-                <p:outputLabel value="Mãe:"/>
-                <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.nome_Mae}"
-                             required="true" requiredMessage="Insira o nome da mãe"/>
-                
-                <p:outputLabel value="CPF Mãe:"/>
-                <p:inputMask mask="999.999.999-99" maxlength="14" size="15" 
-                             value="#{MBAluno.aluno.cpf_Mae}"
-                             required="true" requiredMessage="Insira o cpf da mãe"/>
-                
-                <p:outputLabel value="Pai:"/>
-                <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.nome_pai}"
-                             required="true" requiredMessage="Insira o nome do pai"/>
-                
-                <p:outputLabel value="CPF Pai:"/>
-                <p:inputMask mask="999.999.999-99" maxlength="14" size="15"
-                             value="#{MBAluno.aluno.cpf_Pai}"
-                             required="true" requiredMessage="Insira o CPF do pai"/>
-                
-                <p:outputLabel value="Restrição Alimentar"/>
-                <p:inputText maxlength="100" size="40" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.rest_Alimentar}"/>
-                
-                 <p:outputLabel value="Restrição Medicamento"/>
-                <p:inputText maxlength="100" size="40" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.rest_Medicamento}"/>
+                    </h:panelGrid>
 
-                <p:outputLabel value="Rua:"/>
-                <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.pessoa.rua}"
-                             required="true" requiredMessage="Insira a Rua"/>
+                    <p:fieldset id="dadosPessoais" legend="Dados Pessoais" style="margin-top:10px" >
+                        <h:panelGrid columns="4" id="pnCadAluno3">
 
-                <p:outputLabel value="Numero:"/>
-                <p:inputText maxlength="8" size="10" 
-                             value="#{MBAluno.aluno.pessoa.numero}"
-                             required="true" requiredMessage="Insira o Numero"/>
+                            <p:outputLabel value="Nome:"/>
+                            <p:inputText maxlength="45" size="40" style="text-transform: uppercase" 
+                                         value="#{MBAluno.aluno.pessoa.nome}" 
+                                         required="true" requiredMessage="Insira o Nome" />
 
-                <p:outputLabel value="Complemento:" />
-                <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.pessoa.complemento}"/>
+                            <p:outputLabel value="Nascimento:"/>
+                            <p:calendar id="dtNasc" pattern="dd/MM/yyyy" label="Data de Nascimento" 
+                                        value="#{MBAluno.aluno.pessoa.dt_Nasc}" size="30"
+                                        required="true" requiredMessage="Insira a Data de Nascimento">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                <p:tooltip for="dtNasc" showEvent="focus" hideEvent="blur"/>
+                            </p:calendar>
 
-                <p:outputLabel value="Bairro:"/>
-                <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
-                             value="#{MBAluno.aluno.pessoa.bairro}"
-                             required="true" requiredMessage="Insira o Bairro"/>
+                            <p:outputLabel value="CPF:"/>
+                            <p:inputMask mask="999.999.999-99" maxlength="14" size="30" 
+                                         value="#{MBAluno.aluno.pessoa.cpf}"
+                                         required="true" requiredMessage="Insira o CPF"/>
 
-                <p:outputLabel value="CEP:"/>
-                <p:inputMask mask="99999-999" maxlength="9" size="10"
-                             value="#{MBAluno.aluno.pessoa.cep}"
-                             required="true" requiredMessage="Insira o CEP"/>
+                            <p:outputLabel value="RG:"/>
+                            <p:inputMask mask="99.999.999-9" maxlength="12" size="30"   
+                                         value="#{MBAluno.aluno.pessoa.rg}"/>
+                        </h:panelGrid>
+                    </p:fieldset>
 
-                <p:outputLabel value="Telefone 1:"/>
-                <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
-                             value="#{MBAluno.aluno.pessoa.telefone1}"
-                             required="true" requiredMessage="Insira o Telefone 1"/>
+                    <p:fieldset id="filiacao" legend="Filiação" style="margin-top:10px" >
+                        <h:panelGrid columns="4" id="pnCadAluno4">
+                            <p:outputLabel value="Mãe:"/>
+                            <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.nome_Mae}"
+                                         required="true" requiredMessage="Insira o nome da mãe"/>
 
-                <p:outputLabel value="Telefone 2:"/>
-                <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
-                             value="#{MBAluno.aluno.pessoa.telefone2}"
-                             required="true" requiredMessage="Insira o Telefone 1"/>
+                            <p:outputLabel value="CPF Mãe:"/>
+                            <p:inputMask mask="999.999.999-99" maxlength="14" size="30"
+                                         value="#{MBAluno.aluno.cpf_Mae}"
+                                         required="true" requiredMessage="Insira o cpf da mãe"/>
 
-                <p:outputLabel value="Municipio:"/>
-                <p:selectOneMenu id="municipio" value="#{MBAluno.aluno.pessoa.municipio}" converter="converterMunicipio"
-                                 required="true" requiredMessage="Insira um Municipio" >      
-                    <f:selectItem itemLabel="Selecione" itemValue=""/>      
-                    <f:selectItems value="#{MBAluno.municipios}" var="municipio"       
-                                   itemLabel="#{municipio.mun_Descricao}" itemValue="#{municipio}"/>      
-                </p:selectOneMenu>    
+                            <p:outputLabel value="Pai:"/>
+                            <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.nome_pai}"
+                                         required="true" requiredMessage="Insira o nome do pai"/>
 
-            </h:panelGrid>
-                </p:fieldset>
+                            <p:outputLabel value="CPF Pai:"/>
+                            <p:inputMask mask="999.999.999-99" maxlength="14" size="30"
+                                         value="#{MBAluno.aluno.cpf_Pai}"
+                                         required="true" requiredMessage="Insira o CPF do pai"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset id="endereco" legend="Endereço" style="margin-top:10px" >
+                        <h:panelGrid columns="4" id="pnCadAluno5">
+
+                            <p:outputLabel value="Rua:"/>
+                            <p:inputText maxlength="45" size="50" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.pessoa.rua}"
+                                         required="true" requiredMessage="Insira a Rua"/>
+
+                            <p:outputLabel value="Numero:"/>
+                            <p:inputText maxlength="8" size="30" 
+                                         value="#{MBAluno.aluno.pessoa.numero}"
+                                         required="true" requiredMessage="Insira o Numero"/>
+
+                            <p:outputLabel value="Complemento:" />
+                            <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.pessoa.complemento}"/>
+
+                            <p:outputLabel value="Bairro:"/>
+                            <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.pessoa.bairro}"
+                                         required="true" requiredMessage="Insira o Bairro"/>
+
+                            <p:outputLabel value="CEP:"/>
+                            <p:inputMask mask="99999-999" maxlength="9" size="30"
+                                         value="#{MBAluno.aluno.pessoa.cep}"
+                                         required="true" requiredMessage="Insira o CEP"/>
+
+                            <p:outputLabel value=""/>
+                            <p:outputLabel value=""/>
+
+                            <p:outputLabel value="Telefone 1:"/>
+                            <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
+                                         value="#{MBAluno.aluno.pessoa.telefone1}"
+                                         required="true" requiredMessage="Insira o Telefone 1"/>
+
+                            <p:outputLabel value="Telefone 2:"/>
+                            <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
+                                         value="#{MBAluno.aluno.pessoa.telefone2}"
+                                         required="true" requiredMessage="Insira o Telefone 1"/>
+
+                            <p:outputLabel value="Municipio:"/>
+                            <p:selectOneMenu id="municipio" filter="true" value="#{MBAluno.aluno.pessoa.municipio}" 
+                                             converter="converterMunicipio"
+                                             required="true" requiredMessage="Insira um Municipio" >      
+                                <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                                <f:selectItems value="#{MBAluno.municipios}" var="municipio"       
+                                               itemLabel="#{municipio.mun_Descricao}" itemValue="#{municipio}"/>
+                            </p:selectOneMenu>    
+
+                            
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset id="obs" legend="Observações" style="margin-top:10px" >
+                        <h:panelGrid columns="2" id="pnCadAluno6">
+                            <p:outputLabel value="Restrição Alimentar"/>
+                            <p:inputText maxlength="100" size="60" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.rest_Alimentar}"/>
+
+                            <p:outputLabel value="Restrição Medicamento"/>
+                            <p:inputText maxlength="100" size="60" style="text-transform: uppercase"
+                                         value="#{MBAluno.aluno.rest_Medicamento}"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:panelGrid>
+            </p:fieldset>
             <h:panelGrid columns="2">
 
                 <p:commandButton value="Salvar" actionListener="#{MBAluno.salvar()}" title="Salvar"
-                                 update=":msgGlobal :frmCadAluno:pnCadAluno" 
+                                 update=":msgGlobal :frmCadAluno:pnCadAluno :frmCadAluno:pnCadAluno2
+                                 :frmCadAluno:pnCadAluno3 :frmCadAluno:pnCadAluno4 :frmCadAluno:pnCadAluno5
+                                 :frmCadAluno:pnCadAluno6" 
                                  rendered="#{MBAluno.acao == 'novo'}" action="#{MBAluno.redirecionar()}"/>
 
                 <p:commandButton value="Editar" actionListener="#{MBAluno.editar()}" title="Editar"

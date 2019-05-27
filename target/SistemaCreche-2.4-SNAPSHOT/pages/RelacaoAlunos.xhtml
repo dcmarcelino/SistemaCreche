@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBRelatorio.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="frmConAluno"> 
+            <p:fieldset id="Aluno" legend="Relação de Alunos" 
+                        style="margin-top:10px">
+
+                <p:outputLabel value="Data do Relatório: "/>
+                <p:calendar id="data" pattern="dd/MM/yyyy" label="Data do Relatório" 
+                            value="#{MBRelatorio.dataPesquisa}" 
+                            required="true" size="15" requiredMessage="Insira a Data do Relatório">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                    <p:tooltip for="data" showEvent="focus" hideEvent="blur"/>
+                </p:calendar>
+
+                <p:commandButton icon="ui-icon-search" actionListener="#{MBRelatorio.buscarPorData()}" 
+                                 update=":frmConAluno :frmConAluno:tbAluno"
+                                 title="Pesquisar"/>
+
+                <p:dataTable emptyMessage="Nenhum registro encontrado" rows="6" paginator="true" var="aluno" 
+                             value="#{MBRelatorio.alunos}" widgetVar="tabelaAluno" id="tbAluno"  > 
+
+                    <p:column headerText="Matrícula" sortBy="#{aluno.matricula_Aluno}" filterBy="#{aluno.matricula_Aluno}"
+                              width="10%" style="text-align: center">    
+                        <h:outputText value="#{aluno.matricula_Aluno}" />
+                    </p:column>
+
+                    <p:column headerText="Cadastrado" sortBy="#{MBRelatorio.isCadastrado(aluno)}"
+                              width="10%" style="text-align: center">    
+                        <p:button  icon="ui-icon-check" id="check" rendered="#{MBRelatorio.isCadastrado(aluno)}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome" sortBy="#{aluno.pessoa.nome}" filterBy="#{aluno.pessoa.nome}"> 
+                        <h:outputText value="#{aluno.pessoa.nome}" />
+                    </p:column>
+
+                    <p:column headerText="Turno" sortBy="#{aluno.turno.tur_Descricao}" filterBy="#{aluno.turno.tur_Descricao}"
+                              width="20%" style="text-align: center"> 
+                        <h:outputText value="#{aluno.turno.tur_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Turma" sortBy="#{aluno.turma.tur_Descricao}" filterBy="#{aluno.turma.tur_Descricao}"
+                              width="20%" style="text-align: center"> 
+                        <h:outputText value="#{aluno.turma.tur_Descricao}" />
+                    </p:column>
+
+                    <p:column headerText="Opções" width="20%" style="text-align: center">
+
+                        <p:button  icon="ui-icon-document" outcome="/pages/RelatorioCadastro.xhtml"
+                                   title="Novo" rendered="#{!MBRelatorio.isCadastrado(aluno)}" >
+                            <f:param name="forAluno" value="#{aluno.matricula_Aluno}"/>
+                            <f:param name="acaoRelatorio" value="novo"/>
+                        </p:button>
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>     
+
+    </ui:define>
+</ui:composition>

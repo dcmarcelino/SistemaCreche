@@ -18,7 +18,7 @@
     <!-- Exibe os comando SQL -->
     <property name="show_sql">true</property>
     <!-- Criação das tabelas -->
-    <property name="hbm2ddl.auto">validate</property>
+    <property name="hbm2ddl.auto">update</property>
     <!-- Mapear as tabelas  -->
     <mapping class="br.com.sistemacreche.domain.Aluno"/>
     <mapping class="br.com.sistemacreche.domain.Coloracao"/>
@@ -29,6 +29,7 @@
     <mapping class="br.com.sistemacreche.domain.Item_Banho"/>
     <mapping class="br.com.sistemacreche.domain.Item_Fralda"/>
     <mapping class="br.com.sistemacreche.domain.Item_Refeicao"/>
+    <mapping class="br.com.sistemacreche.domain.Item_Remedio"/>
     <mapping class="br.com.sistemacreche.domain.Municipio"/>
     <mapping class="br.com.sistemacreche.domain.Nivel_Escolar"/>
     <mapping class="br.com.sistemacreche.domain.Pessoa"/>
@@ -37,6 +38,7 @@
     <mapping class="br.com.sistemacreche.domain.Situacao_Ref"/>
     <mapping class="br.com.sistemacreche.domain.Textura"/>
     <mapping class="br.com.sistemacreche.domain.Turno"/>
+    <mapping class="br.com.sistemacreche.domain.Turma"/>
     <mapping class="br.com.sistemacreche.domain.UF"/>
     <mapping class="br.com.sistemacreche.domain.Usuario"/>
   </session-factory>

@@ -8,9 +8,12 @@ package br.com.sistemacreche.dao;
 import br.com.sistemacreche.domain.Usuario;
 import br.com.sistemacreche.util.HibernateUtil;
 import java.util.List;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -32,7 +35,7 @@ public class UsuarioDAO {
             transacao = sessao.beginTransaction();  //iniciando a transação
             Usuario retorno = (Usuario) sessao.merge(usuario); // Salva o objeto no banco 
             transacao.commit(); //confirmando transacao
-           return retorno;
+            return retorno;
         } catch (RuntimeException e) {
 
             if (transacao != null) {
@@ -148,4 +151,26 @@ public class UsuarioDAO {
         }
     }
 
+    public Usuario autenticar(String login, String senha) {
+
+        Session sessao = HibernateUtil.getSessionFactory().openSession(); //inicia a conexão com o banco
+        try {
+            Criteria consulta = sessao.createCriteria(Usuario.class);
+//            consulta.createAlias("usuario", "u");
+            consulta.add(Restrictions.eq("Login", login));
+
+            SimpleHash hash = new SimpleHash("SHA-1", senha);
+            consulta.add(Restrictions.eq("Senha", hash.toHex()));
+            Usuario resultado = (Usuario) consulta.uniqueResult();
+            return resultado;
+            
+        } catch (Exception e) {
+            if (transacao != null) {
+                transacao.rollback();
+            }
+            throw e;
+        } finally {
+            sessao.close();
+        }
+    }
 }

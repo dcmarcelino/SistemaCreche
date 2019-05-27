@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBTurma.listar()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo">
+
+        <h:form id="frmConCamera"> 
+            <p:fieldset id="Camera" legend="Consulta de Câmeras" style="margin-top:10px">
+                <p:fieldset id="Turma" legend="Selecione a Turma" style="margin-top:10px">
+                    <p:selectOneMenu id="turma" value="#{MBTurma.turma}" converter="converterTurma"
+                                     requiredMessage="Insira a turma" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBTurma.turmas}" var="turma"       
+                                       itemLabel="#{turma.tur_Descricao}" 
+                                       itemValue="#{turma}"/>   
+                        <p:ajax update=":frmConCamera:pnConCamera" />
+                    </p:selectOneMenu>
+                </p:fieldset>
+            </p:fieldset>
+        
+
+        <h:panelGrid columns="1" id="pnConCamera" width="100%" style="text-align: center" >
+            <p:graphicImage value="#{MBTurma.turma.camera}" width="50%"/>
+            <p:outputLabel value="#{MBTurma.nomeCamera()}"/>
+        </h:panelGrid >
+</h:form>
+    </ui:define>
+</ui:composition>

@@ -5,6 +5,7 @@ package br.com.sistemacreche.test;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import br.com.sistemacreche.Bean.RelatorioBean;
 import br.com.sistemacreche.Bean.UsuarioBean;
 import br.com.sistemacreche.dao.AlunoDAO;
 import br.com.sistemacreche.dao.ColoracaoDAO;
@@ -12,10 +13,13 @@ import br.com.sistemacreche.dao.ContratoDAO;
 import br.com.sistemacreche.dao.DisposicaoDAO;
 import br.com.sistemacreche.dao.EmpresaDAO;
 import br.com.sistemacreche.dao.FuncionarioDAO;
+import br.com.sistemacreche.dao.Item_RefeicaoDAO;
 import br.com.sistemacreche.dao.MunicipioDAO;
 import br.com.sistemacreche.dao.Nivel_EscolarDAO;
 import br.com.sistemacreche.dao.PessoaDAO;
 import br.com.sistemacreche.dao.RefeicaoDAO;
+import br.com.sistemacreche.dao.RelatorioDAO;
+import br.com.sistemacreche.dao.Situacao_RefDAO;
 import br.com.sistemacreche.dao.TexturaDAO;
 import br.com.sistemacreche.dao.TurnoDAO;
 import br.com.sistemacreche.dao.UFDAO;
@@ -26,15 +30,21 @@ import br.com.sistemacreche.domain.Contrato;
 import br.com.sistemacreche.domain.Disposicao;
 import br.com.sistemacreche.domain.Empresa;
 import br.com.sistemacreche.domain.Funcionario;
+import br.com.sistemacreche.domain.Item_Refeicao;
 import br.com.sistemacreche.domain.Municipio;
 import br.com.sistemacreche.domain.Nivel_Escolar;
 import br.com.sistemacreche.domain.Pessoa;
 import br.com.sistemacreche.domain.Refeicao;
+import br.com.sistemacreche.domain.Relatorio;
+import br.com.sistemacreche.domain.Situacao_Ref;
 import br.com.sistemacreche.domain.Textura;
 import br.com.sistemacreche.domain.UF;
 import br.com.sistemacreche.domain.Usuario;
+import br.com.sistemacreche.util.CodificadorHex;
 import br.com.sistemacreche.util.HibernateUtil;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -43,6 +53,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.MaskFormatter;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -77,7 +89,7 @@ public class GerarTabelaTeste {
     }
 
     @Test
-    @Ignore
+@Ignore
     public void gerarTabelas() {
         HibernateUtil.getSessionFactory();
         HibernateUtil.getSessionFactory().close();
@@ -85,7 +97,25 @@ public class GerarTabelaTeste {
     }
 
     @Test
+    
+    public void toHex() throws DecoderException, UnsupportedEncodingException {
+//
+//        CodificadorHex cod = new CodificadorHex();
+//        System.out.println(cod.toHex("https://stackoverflow.com/questions/13990941/how-to-convert-hex-string-to-java-string"));
+//
+//        System.out.println(cod.toTexto("68747470733a2f2f737461636b6f766572666c6f772e636f6d2f7175657374696f6e732f31333939303934312f686f772d746f2d636f6e766572742d6865782d737472696e672d746f2d6a6176612d737472696e67"));
 
+        String login = "admin";
+        String senha = "123456";
+
+        UsuarioDAO dao = new UsuarioDAO();
+        Usuario u = dao.autenticar(login, senha);
+
+        System.out.println(u);
+    }
+
+    @Test
+    @Ignore
     public void salvar() throws ParseException {
 
 //        Usuario u = new Usuario();
@@ -268,7 +298,7 @@ public class GerarTabelaTeste {
 //        dao.salvar(c5);
 //        ---------------------------------------------
 //        Pessoa p = new Pessoa();
-//        Pessoa p2 = new Pessoa();
+////        Pessoa p2 = new Pessoa();
 //
 //        Municipio m = new Municipio();
 //        MunicipioDAO dao1 = new MunicipioDAO();
@@ -283,13 +313,13 @@ public class GerarTabelaTeste {
 //        p.setNumero("45");
 //        p.setRg("123435823");
 //        p.setRua("Rua Souza Pitanga");
-//        p2.setTelefone1("21982027812");
-//        p2.setTelefone2("98210001411");
+//        p.setTelefone1("21982027812");
+//        p.setTelefone2("98210001411");
 //        p.setDt_Nasc(new Date("14/09/1990"));
 //        p.setMunicipio(m);
 //
-//        p2.setMunicipio(m);
-//        p2.setNome("Roberta Barbarino");
+////        p2.setMunicipio(m);
+////        p2.setNome("Roberta Barbarino");
 //        p2.setBairro("Del Castilho");
 //        p2.setCep("22222-230");
 //        p2.setComplemento("Apto 8552");
@@ -301,14 +331,13 @@ public class GerarTabelaTeste {
 //        p2.setRua("Rua do norte Shopping");
 //        p2.setTelefone1("21982027812");
 //        p2.setTelefone2("98210001411");
-//
 //        Funcionario f = new Funcionario();
-//        Funcionario f2 = new Funcionario();
+////        Funcionario f2 = new Funcionario();
 //
 //        f.setFuncao("Professora");
-//        f2.setFuncao("Enfermeira");
+////        f2.setFuncao("Enfermeira");
 //        f.setPessoa(p);
-//        f2.setPessoa(p2);
+////        f2.setPessoa(p2);
 //
 //        FuncionarioDAO fun = new FuncionarioDAO();
 //
@@ -346,23 +375,22 @@ public class GerarTabelaTeste {
 //        
 //        a.setPessoa(p2);
 //        
-//             
-//        
-//        AlunoDAO dao = new AlunoDAO();
-//        
-//         dao.salvar(a);
-
-//Usuario u = new Usuario();
-//UsuarioBean dao = new UsuarioBean();
-//
-//u.setCategoria("Administrador");
-//u.setCod_Categoria('A');
-//u.setLogin("dcmarcelino2");
-//u.setSenha("123456");
-//dao.setUsuario(u);
-//dao.salvar();
-//        UF uf = new UF();
-//        UF uf2 = new UF();
+////             
+////        
+////        AlunoDAO dao = new AlunoDAO();
+////        
+////         dao.salvar(a);
+////Usuario u = new Usuario();
+////UsuarioBean dao = new UsuarioBean();
+////
+////u.setCategoria("Administrador");
+////u.setCod_Categoria('A');
+////u.setLogin("dcmarcelino2");
+////u.setSenha("123456");
+////dao.setUsuario(u);
+////dao.salvar();
+////        UF uf = new UF();
+////        UF uf2 = new UF();
 //        UF uf3 = new UF();
 //        UF uf4 = new UF();
 //        UF uf5 = new UF();
@@ -419,6 +447,68 @@ public class GerarTabelaTeste {
 //    } catch (ParseException ex) {
 //        
 //    }
+        Relatorio relatorio = new Relatorio();
+        RelatorioDAO dao = new RelatorioDAO();
+
+        List<Item_Refeicao> itens_refeicoes = new ArrayList();
+        Item_Refeicao item_refeicao = new Item_Refeicao();
+        Item_Refeicao item_refeicao2 = new Item_Refeicao();
+
+        Aluno a = new Aluno();
+        AlunoDAO adao = new AlunoDAO();
+        a = adao.buscarPorMat(1L);
+
+        Funcionario f = new Funcionario();
+        FuncionarioDAO fdao = new FuncionarioDAO();
+        f = fdao.buscarPorMat(1L);
+
+        Disposicao disposicao = new Disposicao();
+        DisposicaoDAO ddao = new DisposicaoDAO();
+        disposicao = ddao.buscarPorId(1L);
+
+        Refeicao refeicao = new Refeicao();
+        Refeicao refeicao2 = new Refeicao();
+        RefeicaoDAO rdao = new RefeicaoDAO();
+        refeicao = rdao.buscarPorId(3L);
+        refeicao2 = rdao.buscarPorId(4L);
+
+        Situacao_Ref situacao = new Situacao_Ref();
+        Situacao_RefDAO sdao = new Situacao_RefDAO();
+        situacao = sdao.buscarPorId(1L);
+
+        item_refeicao.setRefeicao(refeicao);
+        item_refeicao.setRelatorio(relatorio);
+        item_refeicao.setSituacao(situacao);
+        item_refeicao.setHora_Ref(new Date());
+
+        item_refeicao2.setRefeicao(refeicao2);
+        item_refeicao2.setRelatorio(relatorio);
+        item_refeicao2.setSituacao(situacao);
+        item_refeicao2.setHora_Ref(new Date());
+
+        itens_refeicoes.add(item_refeicao);
+        itens_refeicoes.add(item_refeicao2);
+
+        Item_RefeicaoDAO idao = new Item_RefeicaoDAO();
+
+        relatorio.setAluno(a);
+        relatorio.setFuncionario(f);
+        relatorio.setHora_Chegada(new Date());
+        relatorio.setHora_Saida(new Date());
+        relatorio.setData_Rel(new Date());
+        relatorio.setDisposicao(disposicao);
+        dao.salvar(relatorio);
+
+        for (Item_Refeicao item : itens_refeicoes) {
+            item.setRelatorio(relatorio);
+            idao.salvar(item);
+        }
+
+        relatorio = new Relatorio();
+        itens_refeicoes = new ArrayList<>();
+
+        System.out.println("Relatorio salvo com sucesso!");
+
     }
 
     @Test
@@ -581,6 +671,9 @@ public class GerarTabelaTeste {
 //        dao.excluir(5L);
 //        ColoracaoDAO dao = new ColoracaoDAO();
 //        dao.excluir(5L);
+        RelatorioDAO rdao = new RelatorioDAO();
+        rdao.excluir(47L);
+
     }
 
     @Test

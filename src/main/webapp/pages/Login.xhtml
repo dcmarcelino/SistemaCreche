@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/templateLogin.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBAutenticacao.iniciarAuth()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo" >
+            
+            <p:dialog widgetVar="dlg" closable="false" draggable="false" resizable="false" visible="true"
+                      modal="false" appendTo="@(body)"  onShow="">
+              
+                <h:form id="frmAutUsuario2" > 
+                    <p:fieldset id="Usuario" legend="Autenticação de Usuário" 
+                                style="text-align: center ; margin-top:10px ; margin-bottom: 10px">
+                        
+                        <h:panelGrid columns="2" id="pnAutUsuario" >
+                            
+                            <p:outputLabel value="Login: "/>
+                            <p:inputText maxlength="20" size="20" required="true" 
+                                         requiredMessage="O Campo Login é Obrigatório" 
+                                         value="#{MBAutenticacao.usuario.login}"/>
+
+                            <p:outputLabel value="Senha: "/>
+                            <p:password maxlength="20" size="20" required="true" 
+                                        requiredMessage="O Campo Senha é Obrigatório"
+                                        value="#{MBAutenticacao.usuario.senha}" />
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <h:panelGrid columns="2" width="100%" style="text-align: center" >
+
+                        <p:commandButton id="botao" value="Entrar" actionListener="#{MBAutenticacao.autenticarUsuario()}" 
+                                         title="Entrar"
+                                         update=":msgGlobal :frmAutUsuario2"  />
+
+                        <p:button value="Voltar"  onclick="PF('dlg').hide();" title="Voltar" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+    </ui:define>
+</ui:composition>

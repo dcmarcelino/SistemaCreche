@@ -26,6 +26,14 @@ and open the template in the editor.
                     <p:outputLabel value="Código:"/>
                     <p:inputText maxlength="20" size="10" readonly="true" value="#{MBUsuario.usuario.id_Usuario}" />
 
+                    <p:outputLabel value="Usuário:"/>
+                    <p:selectOneMenu id="pessoa" value="#{MBUsuario.usuario.pessoa}" converter="converterPessoa"
+                                     required="true" requiredMessage="Insira o Usuario" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBUsuario.pessoas}" var="pessoa"       
+                                       itemLabel="#{pessoa.nome}" itemValue="#{pessoa}"/>      
+                    </p:selectOneMenu>    
+
                     <p:outputLabel value="Login:"/>
                     <p:inputText maxlength="20" size="20" value="#{MBUsuario.usuario.login}" 
                                  required="true" requiredMessage="Insira o Login">
@@ -35,18 +43,19 @@ and open the template in the editor.
                                 required="true" requiredMessage="Insira a Senha" />
                     <p:outputLabel value="Categoria:"/>
 
-                    <p:selectOneMenu id="cat" value="#{MBUsuario.usuario.categoria}"  
-                                      required="true" requiredMessage="Insira a Categoria"  >
+                    <p:selectOneRadio id="cat" value="#{MBUsuario.usuario.categoria}"  
+                                     required="true" requiredMessage="Insira a Categoria"  >
                         <f:selectItem itemLabel="Selecione" itemValue="" />
                         <f:selectItem itemLabel="Administrador" itemValue="ADMINISTRADOR" />
+                        <f:selectItem itemLabel="Diretor" itemValue="DIRETOR" />
                         <f:selectItem itemLabel="Funcionário" itemValue="FUNCIONARIO" />
                         <f:selectItem itemLabel="Usuário" itemValue="USUARIO" />
-                    </p:selectOneMenu>
+                    </p:selectOneRadio>
 
                     <p:outputLabel value="Foto:" for="foto"/>
                     <p:fileUpload id="foto" fileUploadListener="#{MBUsuario.handleFileUpload}"
                                   update=":msgGlobal " auto="true" />
-                    
+
 
                 </h:panelGrid>
             </p:fieldset>

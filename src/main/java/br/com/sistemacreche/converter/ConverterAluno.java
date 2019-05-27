@@ -5,8 +5,8 @@
  */
 package br.com.sistemacreche.converter;
 
-import br.com.sistemacreche.dao.FuncionarioDAO;
-import br.com.sistemacreche.domain.Funcionario;
+import br.com.sistemacreche.dao.AlunoDAO;
+import br.com.sistemacreche.domain.Aluno;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -16,18 +16,18 @@ import javax.faces.convert.FacesConverter;
  *
  * @author Dmarcelino
  */
-@FacesConverter("converterFuncionario")
-public class ConverterFuncionario implements Converter {
+@FacesConverter("converterAluno")
+public class ConverterAluno implements Converter {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent componente, String valor) {
         try {
 
             Long id = Long.parseLong(valor);
-            FuncionarioDAO dao = new FuncionarioDAO();
-            Funcionario funcionario = dao.buscarPorMat(id);
+            AlunoDAO dao = new AlunoDAO();
+            Aluno aluno = dao.buscarPorMat(id);
 
-            return funcionario;
+            return aluno;
         } catch (RuntimeException e) {
             return null;
         }
@@ -37,8 +37,8 @@ public class ConverterFuncionario implements Converter {
     public String getAsString(FacesContext facesContext, UIComponent componente, Object objeto) {
         try {
 
-            Funcionario funcionario = (Funcionario) objeto;
-            Long id = funcionario.getMatricula_Func();
+            Aluno aluno = (Aluno) objeto;
+            Long id = aluno.getMatricula_Aluno();
 
             return id.toString();
         } catch (RuntimeException e) {

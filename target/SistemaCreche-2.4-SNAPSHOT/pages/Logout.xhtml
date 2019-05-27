@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/template.xhtml"
+                >
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{MBAutenticacao.iniciarAuth()}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="conteudo" >
+            
+            <p:dialog widgetVar="dlg" closable="false" draggable="false" resizable="false" visible="true"
+                      modal="false" appendTo="@(body)"  onShow="">
+              
+                <h:form id="frmAutUsuario2" > 
+                    <p:fieldset id="Usuario" legend="Logout" 
+                                style="text-align: center ; margin-top:10px ; margin-bottom: 10px">
+                        
+                        <h:panelGrid columns="1" id="pnAutUsuario" >
+                            
+                            <p:outputLabel value="Tem certeza que deseja sair #{MBAutenticacao.usuarioAutenticado.pessoa.nome}?"/>
+                            
+                            
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <h:panelGrid columns="2" width="100%" style="text-align: center" >
+
+                        <p:commandButton id="botao" value="Sim" actionListener="#{MBAutenticacao.logoutUsuario()}" 
+                                         title="Sim"
+                                         update=":msgGlobal :frmAutUsuario2"  />
+
+                        <p:button value="Voltar"  onclick="PF('dlg').hide();" title="Voltar" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+    </ui:define>
+</ui:composition>

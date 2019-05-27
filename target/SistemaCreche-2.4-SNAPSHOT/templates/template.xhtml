@@ -25,45 +25,52 @@
             </p:layoutUnit>
 
             <p:layoutUnit position="west" size="200" resizable="false" closable="false" collapsible="false" >                                                     
-                <img class="img-usuario" src="http://www.issm.camacari.ba.gov.br/2015/images/padrao.jpg" alt=""  />
+                <img class="img-usuario" src="../resources/images/#{MBAutenticacao.retornaImagem()}.jpg" alt=""  />
                 <h:form>
                     <div class="toolbar">
-                        <p:outputLabel value="Seja bem vindo: "/>
-                        <h:outputText value="Usuário"/>
+                        <p:outputLabel value="Seja bem vindo:"/>
+                        <br></br>
+                        <p:outputLabel value="#{MBAutenticacao.usuarioAutenticado.pessoa.nome} "/>
                     </div>
                 </h:form>
                 <h:form>         
                     <p:panelMenu>
                         <p:submenu label="Arquivo">
                             <p:menuitem value="Principal" outcome="/pages/Principal.xhtml"  />
-                            <p:menuitem value="Sair" />
+                            <p:menuitem value="Sair" outcome="/pages/Logout.xhtml" />
                         </p:submenu>
-                        <p:submenu label="Cadastros"  >
+                        <p:submenu label="Cadastros" rendered="#{MBAutenticacao.exibeConteudoUsuario()}" >
                             <p:menuitem value="Aluno" outcome="/pages/AlunoConsulta.xhtml"  />
-                            <p:menuitem value="Coloração Fezes" outcome="/pages/ColoracaoConsulta.xhtml"  />
-                            <p:menuitem value="Disposição" outcome="/pages/DisposicaoConsulta.xhtml"  />
-                            <p:menuitem value="Funcionario" outcome="/pages/FuncionarioConsulta.xhtml"  />
-                            <p:menuitem value="Municipio" outcome="/pages/MunicipioConsulta.xhtml" />
-                            <p:menuitem value="Nivel Escolar" outcome="/pages/NivelConsulta.xhtml" />
-                            <p:menuitem value="Refeiçao" outcome="/pages/RefeicaoConsulta.xhtml" />
-                            <p:menuitem value="Situação Refeiçao" outcome="/pages/SituacaoRefeicaoConsulta.xhtml" />
-                            <p:menuitem value="Textura" outcome="/pages/TexturaConsulta.xhtml" />
-                            <p:menuitem value="Turno" outcome="/pages/TurnoConsulta.xhtml" />
-                            <p:menuitem value="UF" outcome="/pages/UFConsulta.xhtml" />
-                            <p:menuitem value="Usuario" outcome="/pages/UsuarioConsulta.xhtml" />
+                            <p:menuitem value="Funcionario" outcome="/pages/FuncionarioConsulta.xhtml" rendered="#{MBAutenticacao.exibeConteudoFuncionario()}" />
+                            <p:menuitem value="Refeiçao" outcome="/pages/RefeicaoConsulta.xhtml" rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"/>
+                            <p:menuitem value="Turma" outcome="/pages/TurmaConsulta.xhtml" rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"/>
+                            <p:menuitem value="Turno" outcome="/pages/TurnoConsulta.xhtml" rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"/>
+                            <p:menuitem value="Usuario" outcome="/pages/UsuarioConsulta.xhtml" rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}" />
                         </p:submenu>
 
-                        <p:submenu label="Matriculas"  >
-
+                        <p:submenu label="Matriculas"  rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}" >
+                            <p:menuitem value="Efetuar Matrícula"  />
                             <p:menuitem value="Emitir Contrato"  />
                         </p:submenu>
 
                         <p:submenu label="Relatórios"  >
-                            <p:menuitem value="Relatório Diário" outcome="/pages/RelatorioCadastro.xhtml" />
+                            <p:menuitem value="Consulta de Relatório " outcome="/pages/RelatorioConsulta.xhtml" />
                         </p:submenu>
 
+                        <p:submenu label="Câmeras"  >
+                            <p:menuitem value="Consulta de Câmeras " outcome="/pages/CameraConsulta.xhtml" />
+                        </p:submenu>
+                        <p:submenu label="Tabelas" rendered="#{MBAutenticacao.exibeConteudoFuncUsuDir()}" >
+                            <p:menuitem value="Coloração Fezes" outcome="/pages/ColoracaoConsulta.xhtml"  />
+                            <p:menuitem value="Disposição" outcome="/pages/DisposicaoConsulta.xhtml"  />
+                            <p:menuitem value="Municipio" outcome="/pages/MunicipioConsulta.xhtml" />
+                            <p:menuitem value="Nivel Escolar" outcome="/pages/NivelConsulta.xhtml" />
+                            <p:menuitem value="Situação Refeiçao" outcome="/pages/SituacaoRefeicaoConsulta.xhtml" />
+                            <p:menuitem value="Textura" outcome="/pages/TexturaConsulta.xhtml" />
+                            <p:menuitem value="UF" outcome="/pages/UFConsulta.xhtml" />
+                        </p:submenu>
                         <p:submenu label="Ajuda">
-                            <p:menuitem value="Sobre"  />
+                            <p:menuitem value="Sobre" outcome="/pages/Sobre.xhtml" />
                         </p:submenu>
 
                     </p:panelMenu>
@@ -82,4 +89,31 @@
         </p:layout>
 
     </h:body>
+
+    <script> PrimeFaces.locales['pt'] = {
+            closeText: 'Fechar',
+            prevText: 'Anterior',
+            nextText: 'Próximo',
+            currentText: 'Começo',
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+            weekHeader: 'Semana',
+            firstDay: 0,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: '',
+            timeOnlyTitle: 'Só Horas',
+            timeText: 'Tempo',
+            hourText: 'Hora',
+            minuteText: 'Minuto',
+            secondText: 'Segundo',
+            ampm: false,
+            month: 'Mês',
+            week: 'Semana',
+            day: 'Dia',
+            allDayText: 'Todo o Dia'};
+    </script>
 </html>

@@ -48,7 +48,7 @@ private String Sit_Descricao;
     }
 
     public void setSit_Descricao(String Sit_Descricao) {
-        this.Sit_Descricao = Sit_Descricao;
+        this.Sit_Descricao = Sit_Descricao.toUpperCase();
     }
 
     @Override

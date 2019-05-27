@@ -51,13 +51,15 @@ and open the template in the editor.
                             <f:param name="id" value="#{aluno.matricula_Aluno}"/>
                         </p:commandButton>
 
-                        <p:button icon="ui-icon-pencil" outcome="/pages/AlunoCadastro.xhtml" title="Editar">
+                        <p:button icon="ui-icon-pencil" outcome="/pages/AlunoCadastro.xhtml" title="Editar"
+                                  rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}">
                             <f:param name="forAluno" value="#{aluno.matricula_Aluno}"/>
                             <f:param name="acaoAluno" value="editar"/>
                         </p:button>
 
                         <p:commandButton icon="ui-icon-trash" actionListener="#{MBAluno.buscarObjeto()}" 
                                          oncomplete="PF('dlgExcAlu').show();" update=":frmExcAlu:pnExcAlu"
+                                         rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"
                                          title="Excluir">
                             <f:param name="id" value="#{aluno.matricula_Aluno}"/>
                         </p:commandButton>
@@ -69,6 +71,7 @@ and open the template in the editor.
 
         <h:panelGrid columns="1" id="pnConAluno" width="100%" style="text-align: center">
             <p:button value="Novo" icon="ui-icon-document" outcome="/pages/AlunoCadastro.xhtml"
+                      rendered="#{MBAutenticacao.exibeConteudoFuncUsuario()}"
                       title="Novo" >
                 <f:param name="acaoAluno" value="novo" />
             </p:button>
@@ -83,7 +86,7 @@ and open the template in the editor.
                     <h:outputText value="#{MBAluno.itemSelecionado.matricula_Aluno}"/>
 
                     <p:outputLabel value="Situação:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.situacao}"/>
+                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.ativoFormatado}"/>
 
                     <p:outputLabel value="Nome:" style="font-weight:bold"/>
                     <h:outputText value="#{MBAluno.itemSelecionado.pessoa.nome}"/> 
@@ -108,73 +111,129 @@ and open the template in the editor.
                   modal="true" appendTo="@(body)" >
             <f:facet name="header" >Visualização de Aluno</f:facet>
             <h:form id="frmVisuAlu">
-                <h:panelGrid id="pnVisuAlu" columns="4" cellspacing="8"  >
- 
-                    <p:outputLabel value="Matricula:"  style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.matricula_Aluno}"/>
+                <h:panelGrid columns="1" id="pnVisuAlu">
+                    <h:panelGrid columns="6" id="pnVisuAlu2">
+                        <p:outputLabel value="Situação:"/>
+                        <p:selectBooleanCheckbox itemLabel="Ativo"  value="#{MBAluno.itemSelecionado.pessoa.situacao}"/>
 
-                    <p:outputLabel value="Nome:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.nome}"/>
+                        <p:outputLabel value="Matricula:"/>
+                        <p:inputText maxlength="10" size="10" readonly="true" 
+                                     value="#{MBAluno.itemSelecionado.matricula_Aluno}"/>
 
-                    <p:outputLabel value="Situação:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.situacao}"/>
+                        <p:outputLabel value="Turno:"/>
+                        <p:inputText  value="#{MBAluno.itemSelecionado.turno.tur_Descricao}"/>  
 
-                    <p:outputLabel value="Turno:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.turno.tur_Descricao}"/>
 
-                    <p:outputLabel value="Nascimento:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.dt_Nasc}"/>
+                    </h:panelGrid>
 
-                    <p:outputLabel value="CPF:" style="font-weight:bold"/> 
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.cpf}"/>
+                    <p:fieldset id="dadosPessoais" legend="Dados Pessoais" style="margin-top:10px" >
+                        <h:panelGrid columns="4" id="pnCadAluno3">
 
-                    <p:outputLabel value="RG:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.rg}"/>
+                            <p:outputLabel value="Nome:"/>
+                            <p:inputText maxlength="45" size="40" style="text-transform: uppercase" 
+                                         value="#{MBAluno.itemSelecionado.pessoa.nome}" 
+                                         required="true" requiredMessage="Insira o Nome" />
 
-                    <p:outputLabel value="Mãe:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.nome_Mae}"/>
+                            <p:outputLabel value="Nascimento:"/>
+                            <p:calendar id="dtNasc" pattern="dd/MM/yyyy" label="Data de Nascimento" 
+                                        value="#{MBAluno.itemSelecionado.pessoa.dt_Nasc}" size="30"
+                                        required="true" requiredMessage="Insira a Data de Nascimento">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                <p:tooltip for="dtNasc" showEvent="focus" hideEvent="blur"/>
+                            </p:calendar>
 
-                    <p:outputLabel value="CPF Mãe:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.cpf_Mae}"/>
+                            <p:outputLabel value="CPF:"/>
+                            <p:inputMask mask="999.999.999-99" maxlength="14" size="30" 
+                                         value="#{MBAluno.itemSelecionado.pessoa.cpf}"
+                                         required="true" requiredMessage="Insira o CPF"/>
 
-                    <p:outputLabel value="Pai:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.nome_pai}"/>
+                            <p:outputLabel value="RG:"/>
+                            <p:inputMask mask="99.999.999-9" maxlength="12" size="30"   
+                                         value="#{MBAluno.itemSelecionado.pessoa.rg}"/>
+                        </h:panelGrid>
+                    </p:fieldset>
 
-                    <p:outputLabel value="CPF Pai:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.cpf_Pai}"/>
+                    <p:fieldset id="filiacao" legend="Filiação" style="margin-top:10px" >
+                        <h:panelGrid columns="4" id="pnCadAluno4">
+                            <p:outputLabel value="Mãe:"/>
+                            <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.nome_Mae}"
+                                         required="true" requiredMessage="Insira o nome da mãe"/>
 
-                    <p:outputLabel value="Restrição Alimentar:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.rest_Alimentar}"/>
+                            <p:outputLabel value="CPF Mãe:"/>
+                            <p:inputMask mask="999.999.999-99" maxlength="14" size="30"
+                                         value="#{MBAluno.itemSelecionado.cpf_Mae}"
+                                         required="true" requiredMessage="Insira o cpf da mãe"/>
 
-                    <p:outputLabel value="Restrição Medicamento:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.rest_Medicamento}"/>
+                            <p:outputLabel value="Pai:"/>
+                            <p:inputText maxlength="45" size="40" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.nome_pai}"
+                                         required="true" requiredMessage="Insira o nome do pai"/>
 
-                    <p:outputLabel value="Rua:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.rua}"/>
+                            <p:outputLabel value="CPF Pai:"/>
+                            <p:inputMask mask="999.999.999-99" maxlength="14" size="30"
+                                         value="#{MBAluno.itemSelecionado.cpf_Pai}"
+                                         required="true" requiredMessage="Insira o CPF do pai"/>
+                        </h:panelGrid>
+                    </p:fieldset>
 
-                    <p:outputLabel value="Numero:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.numero}"/>
+                    <p:fieldset id="endereco" legend="Endereço" style="margin-top:10px" >
+                        <h:panelGrid columns="4" id="pnCadAluno5">
 
-                    <p:outputLabel value="Complemento:" style="font-weight:bold" />
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.complemento}"/>
+                            <p:outputLabel value="Rua:"/>
+                            <p:inputText maxlength="45" size="50" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.pessoa.rua}"
+                                         required="true" requiredMessage="Insira a Rua"/>
 
-                    <p:outputLabel value="Bairro:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.bairro}"/>
+                            <p:outputLabel value="Numero:"/>
+                            <p:inputText maxlength="8" size="30" 
+                                         value="#{MBAluno.itemSelecionado.pessoa.numero}"
+                                         required="true" requiredMessage="Insira o Numero"/>
 
-                    <p:outputLabel value="CEP:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.cep}"/>
+                            <p:outputLabel value="Complemento:" />
+                            <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.pessoa.complemento}"/>
 
-                    <p:outputLabel value="Telefone 1:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.telefone1}"/>
+                            <p:outputLabel value="Bairro:"/>
+                            <p:inputText maxlength="45" size="30" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.pessoa.bairro}"
+                                         required="true" requiredMessage="Insira o Bairro"/>
 
-                    <p:outputLabel value="Telefone 2:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.telefone2}"/>
+                            <p:outputLabel value="CEP:"/>
+                            <p:inputMask mask="99999-999" maxlength="9" size="30"
+                                         value="#{MBAluno.itemSelecionado.pessoa.cep}"
+                                         required="true" requiredMessage="Insira o CEP"/>
 
-                    <p:outputLabel value="Municipio:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.municipio.mun_Descricao}"/>
+                            <p:outputLabel value=""/>
+                            <p:outputLabel value=""/>
 
-                    <p:outputLabel value="UF:" style="font-weight:bold"/>
-                    <h:outputText value="#{MBAluno.itemSelecionado.pessoa.municipio.uf.UF_Descricao}"/>
+                            <p:outputLabel value="Telefone 1:"/>
+                            <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
+                                         value="#{MBAluno.itemSelecionado.pessoa.telefone1}"
+                                         required="true" requiredMessage="Insira o Telefone 1"/>
+
+                            <p:outputLabel value="Telefone 2:"/>
+                            <p:inputMask mask="(99)99999-9999" maxlength="14" size="15"
+                                         value="#{MBAluno.itemSelecionado.pessoa.telefone2}"
+                                         required="true" requiredMessage="Insira o Telefone 1"/>
+
+                            <p:outputLabel value="Municipio:"/>
+                            <p:inputText  value="#{MBAluno.itemSelecionado.pessoa.municipio.mun_Descricao}"/>
+                                           
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset id="obs" legend="Observações" style="margin-top:10px" >
+                        <h:panelGrid columns="2" id="pnCadAluno6">
+                            <p:outputLabel value="Restrição Alimentar"/>
+                            <p:inputText maxlength="100" size="60" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.rest_Alimentar}"/>
+
+                            <p:outputLabel value="Restrição Medicamento"/>
+                            <p:inputText maxlength="100" size="60" style="text-transform: uppercase"
+                                         value="#{MBAluno.itemSelecionado.rest_Medicamento}"/>
+                        </h:panelGrid>
+                    </p:fieldset>
                 </h:panelGrid>
                 <br/>
                 <h:panelGrid columns="1" width="100%" style="text-align: center">

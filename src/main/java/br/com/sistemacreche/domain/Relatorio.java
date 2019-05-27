@@ -7,6 +7,8 @@ package br.com.sistemacreche.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,9 +19,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  *
@@ -30,7 +35,8 @@ import javax.persistence.TemporalType;
 @Table (name= "Relatorio")
 @NamedQueries({
 @NamedQuery(name = "Relatorio.listar", query = "SELECT relatorio FROM Relatorio relatorio"),
-@NamedQuery(name = "Relatorio.buscarPorId", query = "SELECT relatorio FROM Relatorio relatorio WHERE relatorio.id_Relatorio = :id_Relatorio")})
+@NamedQuery(name = "Relatorio.buscarPorId", query = "SELECT relatorio FROM Relatorio relatorio WHERE relatorio.id_Relatorio = :id_Relatorio"),
+@NamedQuery(name = "Relatorio.listarPorData", query = "SELECT relatorio FROM Relatorio relatorio WHERE relatorio.Data_Rel = :Data_Rel")})
 public class Relatorio implements Serializable{
     
 @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,26 +56,27 @@ private Date Hora_Chegada;
 @Column (name="Hora_Saida", nullable=false)
 private Date Hora_Saida;
 
-@Column (name="Funcionario", length=45, nullable=false)
-private Funcionario Funcionario;
-
 @Column (name="Trazer", length=60, nullable=true)
 private String Trazer;
 
-@Column (name="Recado", length=45, nullable=true)
+@Column (name="Recado", length=250, nullable=true)
 private String Recado;
 
-@ManyToOne(fetch = FetchType.EAGER)
-@JoinColumn(name = "Item_Refeicao_id_Item_Ref" , referencedColumnName = "id_Item_Ref", nullable=false)
-private Item_Refeicao refeicao;
+@OneToMany(mappedBy = "relatorio", targetEntity = Item_Refeicao.class, 
+        cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+private List<Item_Refeicao> refeicoes;
 
-@ManyToOne(fetch = FetchType.EAGER)
-@JoinColumn(name = "Item_Banho_id_Item_Banho" , referencedColumnName = "id_Item_Banho", nullable=false)
-private Item_Banho banho;
+@OneToMany(mappedBy = "relatorio", targetEntity = Item_Banho.class, 
+        cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+private List<Item_Banho> banhos;
 
-@ManyToOne(fetch = FetchType.EAGER)
-@JoinColumn(name = "Item_Fralda_id_Item_Fralda" , referencedColumnName = "id_Item_Fralda", nullable=false)
-private Item_Fralda fralda;
+@OneToMany(mappedBy = "relatorio", targetEntity = Item_Fralda.class, 
+        cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+private List<Item_Banho> fraldas;
+
+@OneToMany(mappedBy = "relatorio", targetEntity = Item_Remedio.class, 
+        cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+private List<Item_Remedio> remedios;
 
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "Disposicao_id_Disposicao", referencedColumnName = "id_Disposicao", nullable=false)
@@ -78,6 +85,10 @@ private Disposicao disposicao;
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "Aluno_Matricula_Aluno", referencedColumnName = "Matricula_Aluno", nullable=false)
 private Aluno aluno;
+
+@ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "Funcionario_Matricula_Func" , referencedColumnName = "Matricula_Func", nullable=false)
+private Funcionario Funcionario;
 
     public Aluno getAluno() {
         return aluno;
@@ -144,28 +155,28 @@ private Aluno aluno;
         this.Recado = Recado;
     }
 
-    public Item_Refeicao getRefeicao() {
-        return refeicao;
+    public List<Item_Refeicao> getRefeicoes() {
+        return refeicoes;
     }
 
-    public void setRefeicao(Item_Refeicao refeicao) {
-        this.refeicao = refeicao;
+    public void setRefeicoes(List<Item_Refeicao> refeicoes) {
+        this.refeicoes = refeicoes;
     }
 
-    public Item_Banho getBanho() {
-        return banho;
+    public List<Item_Banho> getBanhos() {
+        return banhos;
     }
 
-    public void setBanho(Item_Banho banho) {
-        this.banho = banho;
+    public void setBanhos(List<Item_Banho> banhos) {
+        this.banhos = banhos;
     }
 
-    public Item_Fralda getFralda() {
-        return fralda;
+    public List<Item_Banho> getFraldas() {
+        return fraldas;
     }
 
-    public void setFralda(Item_Fralda fralda) {
-        this.fralda = fralda;
+    public void setFraldas(List<Item_Banho> fraldas) {
+        this.fraldas = fraldas;
     }
 
     public Disposicao getDisposicao() {
@@ -176,12 +187,18 @@ private Aluno aluno;
         this.disposicao = disposicao;
     }
 
-    @Override
-    public String toString() {
-        return "Relatorio{" + "id_Relatorio=" + id_Relatorio + ", Data_Rel=" + Data_Rel + ", Hora_Chegada=" + Hora_Chegada + ", Hora_Saida=" + Hora_Saida + ", Funcionario=" + Funcionario + ", Trazer=" + Trazer + ", Recado=" + Recado + ", refeicao=" + refeicao + ", banho=" + banho + ", fralda=" + fralda + ", disposicao=" + disposicao + ", aluno=" + aluno + '}';
+    public List<Item_Remedio> getRemedios() {
+        return remedios;
     }
 
- 
+    public void setRemedios(List<Item_Remedio> remedios) {
+        this.remedios = remedios;
+    }
 
+    @Override
+    public String toString() {
+        return "Relatorio{" + "id_Relatorio=" + id_Relatorio + ", Data_Rel=" + Data_Rel + ", Hora_Chegada=" + Hora_Chegada + ", Hora_Saida=" + Hora_Saida + ", Funcionario=" + Funcionario + ", Trazer=" + Trazer + ", Recado=" + Recado + ", refeicao=" + refeicoes + ", banho=" + banhos + ", fralda=" + fraldas + ", disposicao=" + disposicao + ", aluno=" + aluno + '}';
+    }
 
+    
 }

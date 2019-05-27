@@ -42,8 +42,11 @@ private long id_Item_Fralda;
 @Column (name="Hora_Fralda", nullable=false)
 private Date Hora_Fralda;
 
-@Column (name="Obs_Fralda", length=45, nullable=true)
-private long Obs_Fralda;
+@Column (name="Tipo", length=45, nullable=true)
+private String tipo;
+
+@Column (name="Obs_Fralda", length=400, nullable=true)
+private String Obs_Fralda;
 
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "Relatorio_id_Relatorio", referencedColumnName = "id_Relatorio", nullable=false)
@@ -73,12 +76,12 @@ private Coloracao coloracao;
         this.Hora_Fralda = Hora_Fralda;
     }
 
-    public long getObs_Fralda() {
+    public String getObs_Fralda() {
         return Obs_Fralda;
     }
 
-    public void setObs_Fralda(long Obs_Fralda) {
-        this.Obs_Fralda = Obs_Fralda;
+    public void setObs_Fralda(String Obs_Fralda) {
+        this.Obs_Fralda = Obs_Fralda.toUpperCase();
     }
 
     public Relatorio getRelatorio() {
@@ -103,6 +106,14 @@ private Coloracao coloracao;
 
     public void setColoracao(Coloracao coloracao) {
         this.coloracao = coloracao;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override

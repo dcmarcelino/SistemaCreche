@@ -21,30 +21,38 @@ and open the template in the editor.
 
     <ui:define name="conteudo">
         <h:form id="frmCadRelatorio"> 
-            <p:fieldset id="Relatorio" legend="#{MBRelatorio.nomearTitulo()}" style="margin-top:10px">
-                <h:panelGrid columns="2" id="pnCadRelatorio" >
-                    
-                    <p:outputLabel value="Código:"/>
-                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.relatorio.id_Relatorio}" />
-                    
-                    <p:outputLabel value="Chegou:"/>
+            <p:fieldset id="Relatorio" legend="#{MBRelatorio.nomearTitulo()} - #{MBRelatorio.aluno.pessoa.nome}" style="margin-top:10px">
+                <h:panelGrid columns="2" id="pnCadRelatorio"  >
+
+                    <p:outputLabel value="Código do Relatório:"  />
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.relatorio.id_Relatorio}"/>
+
+                    <p:outputLabel value="Data do Relatório:"/>
+                    <p:calendar id="data" pattern="dd/MM/yyyy" label="Data do Relatório" 
+                                value="#{MBRelatorio.dataRelatorio}" 
+                                required="true" size="15" requiredMessage="Insira a Data do Relatório">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        <p:tooltip for="data" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="Chegada na Creche:"/>
                     <p:calendar id="chegada" pattern="HH:mm" label="Hora Chegada" 
-                                value="#{MBRelatorio.relatorio.hora_Chegada}"
-                            required="true" requiredMessage="Insira a Data de Chegada">
-                    <f:convertDateTime pattern="HH:mm" />
-                    <p:tooltip for="chegada" showEvent="focus" hideEvent="blur"/>
-                </p:calendar>
-                    
-                    <p:outputLabel value="Saiu:"/>
+                                value="#{MBRelatorio.horaChegada}" timeOnly="true"
+                                required="true" size="15"  requiredMessage="Insira a Data de Chegada">
+                        <f:convertDateTime pattern="HH:mm" />
+                        <p:tooltip for="chegada" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="Saída da Creche:"/>
                     <p:calendar id="saida" pattern="HH:mm" label="Hora Saída" 
-                                value="#{MBRelatorio.relatorio.hora_Saida}"
-                            required="true" requiredMessage="Insira a Data de Saída">
-                    <f:convertDateTime pattern="HH:mm" />
-                    <p:tooltip for="chegada" showEvent="focus" hideEvent="blur"/>
-                </p:calendar>
-                    
+                                value="#{MBRelatorio.horaSaida}" timeOnly="true"
+                                required="true" size="15" requiredMessage="Insira a Data de Saída">
+                        <f:convertDateTime pattern="HH:mm" />
+                        <p:tooltip for="chegada" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
                     <p:outputLabel value="Quem Recebeu:"/>
-                    <p:selectOneMenu id="funcionario" value="#{MBRelatorio.relatorio.funcionario}" 
+                    <p:selectOneMenu id="funcionario" value="#{MBRelatorio.funcionario}" 
                                      converter="converterFuncionario" required="true"  
                                      requiredMessage="Insira o funcionário que recebeu a criança" >      
                         <f:selectItem itemLabel="Selecione" itemValue=""/>      
@@ -53,13 +61,126 @@ and open the template in the editor.
                                        itemValue="#{funcionario}"/>      
                     </p:selectOneMenu>
 
+                    <p:outputLabel value="Disposição do Dia:"/>
+                    <p:selectOneMenu id="disposicao2" value="#{MBRelatorio.disposicao}" 
+                                     converter="converterDisposicao"   
+                                     requiredMessage="Insira a disposição da criança" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBRelatorio.disposicoes}" var="disposicao"       
+                                       itemLabel="#{disposicao.dis_Descricao}" 
+                                       itemValue="#{disposicao}"/>      
+                    </p:selectOneMenu>
+
+
+
+                </h:panelGrid>
+
+                <p:separator />
+
+                <h:panelGrid columns="2" id="pnCadRefRel" >
+                    <p:fieldset id="Refeicao" legend="Refeições do dia:" style="margin-top:20px" >
+
+                        <p:dataTable emptyMessage="Nenhuma Refeição Cadastrada" rows="6" paginator="true" var="refeicao" 
+                                     value="#{MBRelatorio.itens_refeicoes}" widgetVar="tabelaRefeicao" id="tbRefeicao" >
+
+                            <p:column headerText="Hora" sortBy="#{refeicao.hora_Ref}" style="text-align: center" > 
+                                <h:outputText value="#{MBRelatorio.getHoraFormatada(refeicao.hora_Ref)}h" />
+                            </p:column>
+
+                            <p:column headerText="Refeição" style="text-align: center" > 
+                                <h:outputText value="#{refeicao.refeicao.ref_Descricao}" />
+                            </p:column>
+
+                            <p:column headerText="Situação" style="text-align: center"> 
+                                <h:outputText value="#{refeicao.situacao.sit_Descricao}" />
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:commandButton icon=" ui-icon-plus" value="Adicionar" title="Adicionar"
+                                         oncomplete="PF('dlgCadRefeicao').show();" update=":frmCadRefeicao:pnCadRef"/>
+                    </p:fieldset>
+
+                    <p:fieldset id="Fralda" legend="Trocas de Fralda:" style="margin-top:20px">
+                        <p:dataTable emptyMessage="Nenhuma Troca de Fralda Cadastrada" rows="6" paginator="true"
+                                     var="fralda" value="#{MBRelatorio.itens_fraldas}" widgetVar="tabelaFralda" id="tbFralda" >
+
+                            <p:column headerText="Hora" sortBy="#{fralda.hora_Fralda}" style="text-align: center" > 
+                                <h:outputText value="#{MBRelatorio.getHoraFormatada(fralda.hora_Fralda)}h"/>
+                            </p:column>
+
+                            <p:column headerText="Tipo" style="text-align: center"  > 
+                                <h:outputText value="#{fralda.tipo}"  />
+                            </p:column>
+
+                            <p:column headerText="Textura" style="text-align: center" > 
+                                <h:outputText value="#{fralda.textura.tex_Descricao}"  />
+                            </p:column>
+
+                            <p:column headerText="Coloração" style="text-align: center" > 
+                                <h:outputText value="#{fralda.coloracao.col_Descricao}"  />
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:commandButton icon=" ui-icon-plus" value="Adicionar" title="Adicionar"
+                                         oncomplete="PF('dlgCadTrocaFralda').show();" update=":frmCadFralda:pnCadFra"/>
+                    </p:fieldset>
+
+                    <p:fieldset id="Banho" legend="Banhos do dia:" style="margin-top:20px" >
+
+                        <p:dataTable emptyMessage="Nenhum Banho Cadastrado" rows="6" paginator="true" 
+                                     var="banho" value="#{MBRelatorio.itens_banhos}" widgetVar="tabelaBanho" id="tbBanho" >
+
+                            <p:column headerText="Hora do Banho"  style="text-align: center" > 
+                                <h:outputText value="#{MBRelatorio.getHoraFormatada(banho.hora_Banho)}h" />
+                            </p:column>
+
+
+                        </p:dataTable>
+                        <p:commandButton icon=" ui-icon-plus" value="Adicionar" title="Adicionar"
+                                         oncomplete="PF('dlgCadBanho').show();" update=":frmCadBanho:pnCadBan"/>
+                    </p:fieldset>
+
+                    <p:fieldset id="Remedio" legend="Remedios:" style="margin-top:20px">
+                        <p:dataTable emptyMessage="Nenhum Remedio ministrado" rows="6" paginator="true"
+                                     var="remedio" value="#{MBRelatorio.itens_remedios}" widgetVar="tabelaRemedio" id="tbRemedio" >
+
+                            <p:column headerText="Hora" sortBy="#{remedio.hora_Remedio}" style="text-align: center" > 
+                                <h:outputText value="#{MBRelatorio.getHoraFormatada(remedio.hora_Remedio)}h"/>
+                            </p:column>
+
+                            <p:column headerText="Remédio" style="text-align: center"  > 
+                                <h:outputText value="#{remedio.remedio}"  />
+                            </p:column>
+
+                            <p:column headerText="Dosagem" style="text-align: center" > 
+                                <h:outputText value="#{remedio.dosagem}"  />
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:commandButton icon=" ui-icon-plus" value="Adicionar" title="Adicionar"
+                                         oncomplete="PF('dlgCadRemedio').show();" update=":frmCadRemedio:pnCadRem"/>
+                    </p:fieldset>
+                </h:panelGrid>
+
+                <p:separator />
+
+                <h:panelGrid columns="2" id="pnCadRelatorio2" width="100%">
+                    <p:outputLabel value="Observações do dia:"/>
+                    <p:outputLabel value="Mamãe Trazer:"/>
+
+                    <p:inputTextarea maxlength="250" rows="7" cols="65"  value="#{MBRelatorio.relatorio.recado}"
+                                     style="text-transform: uppercase" />
+
+
+                    <p:inputTextarea maxlength="60" rows="7" cols="65"  value="#{MBRelatorio.relatorio.trazer}"
+                                     style="text-transform: uppercase"/>
                 </h:panelGrid>
             </p:fieldset>
-            <h:panelGrid columns="2">
+            <h:panelGrid columns="3" id="botao">
 
-                <p:commandButton value="Salvar" actionListener="#{MBRelatorio.salvar()}" title="Salvar"
-                                 update=":msgGlobal :frmCadRelatorio:pnCadRelatorio " 
-                                 rendered="#{MBRelatorio.acao == 'novo'}"
+                <p:commandButton value="Salvar" actionListener="#{MBRelatorio.salvar}" title="Salvar"
+                                 update=":msgGlobal :frmCadRelatorio:pnCadRelatorio "
+
                                  action="#{MBRelatorio.redirecionar()}"/>
 
                 <p:commandButton value="Editar" actionListener="#{MBRelatorio.editar()}" title="Editar"
@@ -67,8 +188,201 @@ and open the template in the editor.
                                  rendered="#{MBRelatorio.acao == 'editar'}"
                                  action="#{MBRelatorio.redirecionar()}"/>
 
-                <p:button value="Voltar" outcome="/pages/RelatorioConsulta.xhtml" title="Voltar" />
+                <p:button value="Voltar" outcome="/pages/RelacaoAlunos.xhtml" title="Voltar" />
             </h:panelGrid>
         </h:form>
+
+
+        <p:dialog widgetVar="dlgCadRefeicao" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Cadastro de Refeições</f:facet>
+            <h:form id="frmCadRefeicao">
+                <h:panelGrid id="pnCadRef" columns="2" cellspacing="8" >
+
+                    <p:outputLabel value="Código:" style="font-weight:bold" />
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.item_refeicao.id_Item_Ref}"/>
+
+                    <p:outputLabel for="horaRefeicao" value="Hora da Refeição:" style="font-weight:bold"/>
+                    <p:calendar id="horaRefeicao" pattern="HH:mm" label="Hora Refeição" timeOnly="true" locale="pt"
+                                value="#{MBRelatorio.horaRefeicao}" 
+                                required="true" size="15"  requiredMessage="Insira a Data da Refeição">
+                        <f:convertDateTime pattern="HH:mm" />
+                        <p:tooltip for="horaRefeicao" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="Refeição:" style="font-weight:bold"/>
+                    <p:selectOneMenu id="refeicao" value="#{MBRelatorio.refeicao}" 
+                                     converter="converterRefeicao" required="true"  
+                                     requiredMessage="Insira a Refeição" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBRelatorio.refeicoes}" var="refeicao"       
+                                       itemLabel="#{refeicao.ref_Descricao}" 
+                                       itemValue="#{refeicao}"/>      
+                    </p:selectOneMenu> 
+
+                    <p:outputLabel value="Situação da Refeição:" style="font-weight:bold"/>
+                    <p:selectOneMenu id="sitrefeicao" value="#{MBRelatorio.situacao_ref}" 
+                                     converter="converterSituacao_Ref" required="true"  
+                                     requiredMessage="Insira a Situação da Refeição" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBRelatorio.situacoes_ref}" var="sitrefeicao"       
+                                       itemLabel="#{sitrefeicao.sit_Descricao}" 
+                                       itemValue="#{sitrefeicao}"/>      
+                    </p:selectOneMenu> 
+
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2" width="100%" style="text-align: center">
+                    <p:commandButton value="Incluir" action="#{MBRelatorio.incluirItemRefeicao()}" 
+                                     onsuccess="PF('dlgCadRefeicao').hide(); PF('tabelaRefeicao').clearFilters(); " 
+                                     title="Incluir" 
+                                     update=":msgGlobal :frmCadRelatorio:botao :frmCadRelatorio:pnCadRefRel :frmCadRefeicao:pnCadRef" />
+
+                    <p:commandButton value="Cancelar" onclick="PF('dlgCadRefeicao').hide();" title="Cancelar" 
+                                     update=":frmCadRefeicao:pnCadRef" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+        <p:dialog widgetVar="dlgCadTrocaFralda" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Trocas de Fraldas</f:facet>
+            <h:form id="frmCadFralda">
+                <h:panelGrid id="pnCadFra" columns="2" cellspacing="8" >
+
+                    <p:outputLabel value="Código:" style="font-weight:bold" />
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.item_fralda.id_Item_Fralda}"/>
+
+                    <p:outputLabel for="horaFralda" value="Hora da Troca:" style="font-weight:bold"/>
+                    <p:calendar id="horaFralda" pattern="HH:mm" label="Hora da Troca" timeOnly="true" locale="pt"
+                                value="#{MBRelatorio.horaFralda}" 
+                                required="true" size="15"  requiredMessage="Insira a hora da troca">
+                        <f:convertDateTime pattern="HH:mm" />
+                        <p:tooltip for="horaFralda" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="Tipo de Troca:" style="font-weight:bold"/>
+                    <p:selectOneMenu id="tipotroca" value="#{MBRelatorio.tipo}" 
+                                     required="true"  
+                                     requiredMessage="Insira o tipo de troca" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItem itemLabel="Xixi" itemValue="XIXI" />
+                        <f:selectItem itemLabel="Cocô" itemValue="COCÔ" /> 
+                    </p:selectOneMenu> 
+
+                    <p:outputLabel value="Textura:" style="font-weight:bold"/>
+                    <p:selectOneMenu id="textura" value="#{MBRelatorio.textura}" 
+                                     converter="converterTextura" required="true"  
+                                     requiredMessage="Insira a Textura" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBRelatorio.texturas}" var="textura"       
+                                       itemLabel="#{textura.tex_Descricao}" 
+                                       itemValue="#{textura}"/>      
+                    </p:selectOneMenu> 
+
+                    <p:outputLabel value="Coloração:" style="font-weight:bold"/>
+                    <p:selectOneMenu id="coloracao" value="#{MBRelatorio.coloracao}" 
+                                     converter="converterColoracao" required="true"  
+                                     requiredMessage="Insira a Coloração" >      
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>      
+                        <f:selectItems value="#{MBRelatorio.coloracoes}" var="coloracao"       
+                                       itemLabel="#{coloracao.col_Descricao}" 
+                                       itemValue="#{coloracao}"/>      
+                    </p:selectOneMenu> 
+
+                    <p:outputLabel value="Observações:" style="font-weight:bold" />
+                    <p:inputTextarea maxlength="45" rows="7" cols="40"  value="#{MBRelatorio.obs}"
+                                     style="text-transform: uppercase" />
+
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2" width="100%" style="text-align: center">
+                    <p:commandButton value="Incluir" action="#{MBRelatorio.incluirItemFralda()}" 
+                                     onsuccess="PF('dlgCadTrocaFralda').hide(); PF('tabelaFralda').clearFilters(); " 
+                                     title="Incluir" 
+                                     update=":msgGlobal :frmCadRelatorio:botao :frmCadRelatorio:pnCadRefRel :frmCadFralda:pnCadFra" />
+
+
+                    <p:commandButton value="Cancelar" onclick="PF('dlgCadTrocaFralda').hide();" title="Cancelar" 
+                                     update=":frmCadFralda:pnCadFra" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+        <p:dialog widgetVar="dlgCadRemedio" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Cadastro de Remedios Ministrados</f:facet>
+            <h:form id="frmCadRemedio">
+                <h:panelGrid id="pnCadRem" columns="2" cellspacing="8" >
+
+                    <p:outputLabel value="Código:" style="font-weight:bold" />
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.item_remedio.id_Item_Remedio}"/>
+
+                    <p:outputLabel for="horaRemedio" value="Hora do Remedio:" style="font-weight:bold"/>
+                    <p:calendar id="horaRemedio" pattern="HH:mm" label="Hora do Remedio" timeOnly="true" locale="pt"
+                                value="#{MBRelatorio.horaRemedio}" 
+                                required="true" size="15"  requiredMessage="Insira a hora do Remedio">
+                        <f:convertDateTime pattern="HH:mm" />
+                        <p:tooltip for="horaRemedio" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                    <p:outputLabel value="Nome do Remédio:" style="font-weight:bold"/>
+                    <p:inputTextarea maxlength="45" rows="2" cols="40"  value="#{MBRelatorio.remedio}"
+                                     style="text-transform: uppercase" />
+
+                    <p:outputLabel value="Dosagem Ministrada:" style="font-weight:bold"/>
+                    <p:inputTextarea maxlength="45" rows="2" cols="40"  value="#{MBRelatorio.dosagem}"
+                                     style="text-transform: uppercase" />
+
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2" width="100%" style="text-align: center">
+                    <p:commandButton value="Incluir" action="#{MBRelatorio.incluirItemRemedio()}" 
+                                     onsuccess="PF('dlgCadRemedio').hide(); PF('tabelaRemedio').clearFilters(); " 
+                                     title="Incluir" 
+                                     update=":msgGlobal :frmCadRelatorio:botao :frmCadRelatorio:pnCadRefRel :frmCadRemedio:pnCadRem" />
+
+
+                    <p:commandButton value="Cancelar" onclick="PF('dlgCadRemedio').hide();" title="Cancelar" 
+                                     update=":frmCadRemedio:pnCadRem" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
+
+        <p:dialog widgetVar="dlgCadBanho" closable="false" draggable="false" resizable="false" 
+                  modal="true" appendTo="@(body)" >
+            <f:facet name="header" >Cadastro de Banhos</f:facet>
+            <h:form id="frmCadBanho">
+                <h:panelGrid id="pnCadBan" columns="2" cellspacing="8" >
+
+                    <p:outputLabel value="Código:" style="font-weight:bold" />
+                    <p:inputText maxlength="20" size="10" readonly="true" value="#{MBRelatorio.item_banho.id_Item_Banho}"/>
+
+                    <p:outputLabel for="horaBanho" value="Hora do Banho:" style="font-weight:bold"/>
+                    <p:calendar id="horaBanho" pattern="HH:mm" label="Hora do Banho" timeOnly="true" locale="pt"
+                                value="#{MBRelatorio.horaBanho}" 
+                                required="true" size="15"  requiredMessage="Insira a hora do Banho">
+                        <f:convertDateTime pattern="HH:mm" />
+                        <p:tooltip for="horaBanho" showEvent="focus" hideEvent="blur"/>
+                    </p:calendar>
+
+                </h:panelGrid>
+
+                <br/>
+                <h:panelGrid columns="2" width="100%" style="text-align: center">
+                    <p:commandButton value="Incluir" action="#{MBRelatorio.incluirItemBanho()}" 
+                                     onsuccess="PF('dlgCadBanho').hide(); PF('tabelaBanho').clearFilters(); " 
+                                     title="Incluir" 
+                                     update=":msgGlobal :frmCadRelatorio:botao :frmCadRelatorio:pnCadRefRel :frmCadBanho:pnCadBan" />
+
+
+                    <p:commandButton value="Cancelar" onclick="PF('dlgCadBanho').hide();" title="Cancelar" 
+                                     update=":frmCadBanho:pnCadBan" />
+                </h:panelGrid>
+            </h:form>  
+        </p:dialog> 
     </ui:define>
 </ui:composition>

@@ -1,6 +1,8 @@
 package br.com.sistemacreche.Bean;
 
+import br.com.sistemacreche.dao.PessoaDAO;
 import br.com.sistemacreche.dao.UsuarioDAO;
+import br.com.sistemacreche.domain.Pessoa;
 import br.com.sistemacreche.domain.Usuario;
 import br.com.sistemacreche.util.JSFUtil;
 import java.io.ByteArrayInputStream;
@@ -20,6 +22,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.bean.ViewScoped;
 import javax.xml.ws.Service;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -28,7 +32,6 @@ import org.primefaces.model.UploadedFile;
  *
  * @author Dmarcelino
  */
-
 @ManagedBean(name = "MBUsuario")
 @ViewScoped
 public class UsuarioBean implements Serializable {
@@ -38,6 +41,7 @@ public class UsuarioBean implements Serializable {
     private String acao;
     private Usuario itemSelecionado;
     private UploadedFile file;
+    private List<Pessoa> pessoas;
 
     public Usuario getUsuario() {
         if (usuario == null) {
@@ -82,22 +86,36 @@ public class UsuarioBean implements Serializable {
         this.file = file;
     }
 
+    public List<Pessoa> getPessoas() {
+        return pessoas;
+    }
+
+    public void setPessoas(List<Pessoa> pessoas) {
+        this.pessoas = pessoas;
+    }
+
     public void salvar() throws IOException {
 
         try {
-    
+            SimpleHash hash = new SimpleHash("SHA-1", usuario.getSenha());
+            usuario.setSenha(hash.toHex());
             usuario.setCod_Categoria(adicionaCodCategoria(usuario.getCategoria())); //seta o código da categoria no usuario
 //            usuario.setImgUser(file.getContents()); //salva o arquivo como BLOB no banco
+
             UsuarioDAO dao = new UsuarioDAO();
             Usuario retorno = dao.salvar(usuario);
-            Path origem = Paths.get(usuario.getCaminho());
-            Path destino = Paths.get("C:/Workspace/uploads/" + retorno.getId_Usuario() + ".jpg");
 
-            Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+            if (usuario.getCaminho() != null) {
+                Path origem = Paths.get(usuario.getCaminho()); // recupera o caminho temporario do arquivo
+                Path destino = Paths.get("C:\\Users\\Marcelino\\Documents\\NetBeansProjects\\SistemaCreche\\src\\main\\webapp\\resources\\images\\" + retorno.getId_Usuario() + ".jpg");
+
+                Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+            }
 
             Messages.addGlobalInfo("Usuário salvo com sucesso!");
 
             usuario = new Usuario();
+            usuario.setPessoa(new Pessoa());
 
         } catch (RuntimeException | IOException e) {
             JSFUtil.enviarMensagemErro(e.getMessage());
@@ -110,6 +128,8 @@ public class UsuarioBean implements Serializable {
     public void editar() {
 
         try {
+            SimpleHash hash = new SimpleHash("SHA-1", usuario.getSenha());
+            usuario.setSenha(hash.toHex());
             usuario.setCod_Categoria(adicionaCodCategoria(usuario.getCategoria())); //seta o código da categoria no usuario
             UsuarioDAO dao = new UsuarioDAO();
             dao.editar(usuario);
@@ -140,6 +160,9 @@ public class UsuarioBean implements Serializable {
 
                 UsuarioDAO dao = new UsuarioDAO();
                 usuario = dao.buscarPorId(codigo);
+                PessoaDAO pdao = new PessoaDAO();
+                pessoas = pdao.listar();
+
             } else {
                 usuario = new Usuario();
             }
@@ -155,9 +178,20 @@ public class UsuarioBean implements Serializable {
     public void excluir(Long id) {
         try {
             UsuarioDAO dao = new UsuarioDAO();
-            dao.excluir(id);
 
-            JSFUtil.enviarMensagemSucesso("Usuario excluida com sucesso!");
+            Usuario usuario = new Usuario();
+            usuario = dao.buscarPorId(id);
+
+            AutenticacaoBean auth = (AutenticacaoBean) Faces.getSessionAttribute("MBAutenticacao");
+            Usuario usuarioAutenticado = auth.getUsuarioAutenticado();
+
+            if (usuario.equals(usuarioAutenticado)) {
+                JSFUtil.enviarMensagemErro("Não é possível excluir o usuário atual!");
+                return;
+            }
+            dao.excluir(id);
+            JSFUtil.enviarMensagemSucesso("Usuario excluído com sucesso!");
+
         } catch (RuntimeException e) {
 
             JSFUtil.enviarMensagemErro("Não foi possível excluir a usuario" + e.getMessage());
@@ -169,6 +203,9 @@ public class UsuarioBean implements Serializable {
         try {
             UsuarioDAO dao = new UsuarioDAO();
             usuarios = dao.listar();
+
+            PessoaDAO pdao = new PessoaDAO();
+            pessoas = pdao.listar();
         } catch (RuntimeException e) {
 
             JSFUtil.enviarMensagemErro(e.getMessage());
@@ -183,7 +220,7 @@ public class UsuarioBean implements Serializable {
             Long codigo = Long.parseLong(valor);
 
             UsuarioDAO dao = new UsuarioDAO();
-            
+
             usuario = dao.buscarPorId(codigo);
 
         } else {
@@ -199,7 +236,6 @@ public class UsuarioBean implements Serializable {
 //        context.getExternalContext().redirect("UsuarioConsulta.xhtml");
 //
 //    }
-
     public String nomearTitulo() {
 
         if (acao.equalsIgnoreCase("novo")) {
@@ -213,8 +249,8 @@ public class UsuarioBean implements Serializable {
     public char adicionaCodCategoria(String categoria) {
         char Codcategoria;
         if (categoria.equalsIgnoreCase("ADMINISTRADOR")) {
-           Codcategoria = 'A';
-           return Codcategoria;
+            Codcategoria = 'A';
+            return Codcategoria;
         } else {
             if (categoria.equalsIgnoreCase("USUARIO")) {
                 Codcategoria = 'U';
@@ -224,6 +260,13 @@ public class UsuarioBean implements Serializable {
                     usuario.setCod_Categoria('F');
                     Codcategoria = 'F';
                     return Codcategoria;
+
+                } else {
+                    if (categoria.equalsIgnoreCase("DIRETOR")) {
+                        usuario.setCod_Categoria('D');
+                        Codcategoria = 'D';
+                        return Codcategoria;
+                    }
                 }
             }
         }
@@ -232,9 +275,10 @@ public class UsuarioBean implements Serializable {
 
     public void handleFileUpload(FileUploadEvent evento) throws IOException {
         try {
+
             file = evento.getFile(); //pega a imagem que o usuário inseriu e transforma em um array de Bytes e salva no atributo do usuario
             Path temp = Files.createTempFile(null, null); //cria variavel com o caminho onde foi salvo temporariamente
-            Files.copy(file.getInputstream(), temp, StandardCopyOption.REPLACE_EXISTING ); //1º parametros arquivo, 2º local, 3º formato copia
+            Files.copy(file.getInputstream(), temp, StandardCopyOption.REPLACE_EXISTING); //1º parametros arquivo, 2º local, 3º formato copia
             usuario.setCaminho(temp.toString()); // recupera o caminho onde foi salvo temporariamente, transforma em string e seta no atributo
             JSFUtil.enviarMensagemSucesso("Arquivo enviado com sucesso");
 

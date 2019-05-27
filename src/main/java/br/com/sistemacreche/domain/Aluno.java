@@ -7,6 +7,7 @@ package br.com.sistemacreche.domain;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,9 +32,10 @@ import javax.swing.text.MaskFormatter;
 @Entity
 @Table(name = "Aluno")
 @NamedQueries({
-    @NamedQuery(name = "Aluno.listar", query = "SELECT aluno FROM Aluno aluno"),
+    @NamedQuery(name = "Aluno.listar", query = "SELECT aluno FROM Aluno aluno")
+    ,
     @NamedQuery(name = "Aluno.buscarPorMat", query = "SELECT aluno FROM Aluno aluno WHERE aluno.Matricula_Aluno = :Matricula_Aluno")})
-public class Aluno implements Serializable{
+public class Aluno implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
@@ -43,30 +45,33 @@ public class Aluno implements Serializable{
     @Column(name = "Nome_Mae", length = 45, nullable = false)
     private String Nome_Mae;
 
-    @Column(name = "Cpf_Mae", unique = true, length = 11, nullable = false)
+    @Column(name = "Cpf_Mae", length = 11, nullable = false)
     private String Cpf_Mae;
 
     @Column(name = "Nome_Pai", length = 45, nullable = false)
     private String nome_pai;
 
-    @Column(name = "Cpf_Pai", unique = true, length = 11, nullable = false)
+    @Column(name = "Cpf_Pai", length = 11, nullable = false)
     private String Cpf_Pai;
 
     @Column(name = "Rest_Alimentar", length = 50, nullable = true)
     private String Rest_Alimentar;
-    
-   @Column(name = "Rest_Medicamento", length = 50, nullable = true)
+
+    @Column(name = "Rest_Medicamento", length = 50, nullable = true)
     private String Rest_Medicamento;
-    
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "Pessoa_id_Pessoa", referencedColumnName = "id_Pessoa", nullable = false)
     private Pessoa pessoa;
-    
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "Turno_id_Turno", referencedColumnName = "id_Turno", nullable = false)
     private Turno turno;
-    
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "Turma_id_Turma", referencedColumnName = "id_Turma", nullable = true)
+    private Turma turma;
+
     public Aluno() {
         pessoa = new Pessoa(); //instancia o atributo pessoa para nao aparecer null na view
     }
@@ -84,7 +89,7 @@ public class Aluno implements Serializable{
     }
 
     public void setNome_Mae(String Nome_Mae) {
-        this.Nome_Mae = Nome_Mae;
+        this.Nome_Mae = Nome_Mae.toUpperCase();
     }
 
     public String getCpf_Mae() throws ParseException {
@@ -103,7 +108,7 @@ public class Aluno implements Serializable{
     }
 
     public void setNome_pai(String nome_pai) {
-        this.nome_pai = nome_pai;
+        this.nome_pai = nome_pai.toUpperCase();
     }
 
     public String getCpf_Pai() throws ParseException {
@@ -122,7 +127,7 @@ public class Aluno implements Serializable{
     }
 
     public void setRest_Alimentar(String Rest_Alimentar) {
-        this.Rest_Alimentar = Rest_Alimentar;
+        this.Rest_Alimentar = Rest_Alimentar.toUpperCase();
     }
 
     public Pessoa getPessoa() {
@@ -146,13 +151,20 @@ public class Aluno implements Serializable{
     }
 
     public void setRest_Medicamento(String Rest_Medicamento) {
-        this.Rest_Medicamento = Rest_Medicamento;
+        this.Rest_Medicamento = Rest_Medicamento.toUpperCase();
     }
 
-    
+    public Turma getTurma() {
+        return turma;
+    }
+
+    public void setTurma(Turma turma) {
+        this.turma = turma;
+    }
+
     @Override
     public String toString() {
-        return "Aluno{" + "Matricula_Aluno=" + Matricula_Aluno + ", Nome_Mae=" + Nome_Mae + ", Cpf_Mae=" + Cpf_Mae + ", nome_pai=" + nome_pai + ", Cpf_Pai=" + Cpf_Pai +  ", Rest_Alimentar=" + Rest_Alimentar + ", pessoa=" + pessoa + ", turno=" + turno + '}';
+        return "Aluno{" + "Matricula_Aluno=" + Matricula_Aluno + ", Nome_Mae=" + Nome_Mae + ", Cpf_Mae=" + Cpf_Mae + ", nome_pai=" + nome_pai + ", Cpf_Pai=" + Cpf_Pai + ", Rest_Alimentar=" + Rest_Alimentar + ", pessoa=" + pessoa + ", turno=" + turno + '}';
     }
 
     @Override
@@ -179,5 +191,5 @@ public class Aluno implements Serializable{
         }
         return true;
     }
-    
+
 }

@@ -44,6 +44,10 @@ public class TurnoBean implements Serializable {
         return turnos;
     }
 
+    public void setTurnos(List<Turno> turnos) {
+        this.turnos = turnos;
+    }
+
     public Turno getItemSelecionado() {
         return itemSelecionado;
     }

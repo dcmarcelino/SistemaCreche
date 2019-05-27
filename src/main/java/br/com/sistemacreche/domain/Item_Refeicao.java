@@ -7,6 +7,7 @@ package br.com.sistemacreche.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,7 +36,7 @@ public class Item_Refeicao implements Serializable{
 
 @GeneratedValue(strategy = GenerationType.AUTO)
 @Id
-@Column (name="id_Item_Ref", nullable=false)
+@Column (name="id_Item_Ref", nullable=true)
 private long id_Item_Ref;
 
 @Temporal (value = TemporalType.TIMESTAMP)
@@ -46,7 +47,7 @@ private Date Hora_Ref;
 @JoinColumn(name = "Refeicao_id_Refeicao", referencedColumnName = "id_Refeicao", nullable=false)
 private Refeicao refeicao;
 
-@ManyToOne(fetch = FetchType.EAGER)
+@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 @JoinColumn(name = "Relatorio_id_Relatorio", referencedColumnName = "id_Relatorio", nullable=false)
 private Relatorio relatorio;
 

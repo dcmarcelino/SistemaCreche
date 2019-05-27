@@ -169,7 +169,7 @@ public class Situacao_RefBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
 
-        context.getExternalContext().redirect("Situacao_RefConsulta.xhtml");
+        context.getExternalContext().redirect("SituacaoRefeicaoConsulta.xhtml");
 
     }
     

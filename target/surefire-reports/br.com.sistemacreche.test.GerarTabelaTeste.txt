@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: br.com.sistemacreche.test.GerarTabelaTeste
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 1.991 sec
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 7, Time elapsed: 2.659 sec
