@@ -21,12 +21,16 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table (name= "Coloracao")
 @NamedQueries({
 @NamedQuery(name = "Coloracao.listar", query = "SELECT coloracao FROM Coloracao coloracao"),
 @NamedQuery(name = "Coloracao.buscarPorId", query = "SELECT coloracao FROM Coloracao coloracao WHERE coloracao.id_Coloracao = :id_Coloracao")})
 public class Coloracao implements Serializable{
     
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 @GeneratedValue(strategy = GenerationType.AUTO)
 @Id
 @Column (name="id_Coloracao", nullable=false)

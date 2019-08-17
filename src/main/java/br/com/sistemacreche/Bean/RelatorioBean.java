@@ -30,6 +30,7 @@ import br.com.sistemacreche.domain.Relatorio;
 import br.com.sistemacreche.domain.Situacao_Ref;
 import br.com.sistemacreche.domain.Textura;
 import br.com.sistemacreche.domain.UF;
+import br.com.sistemacreche.domain.Usuario;
 import br.com.sistemacreche.util.JSFUtil;
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,6 +42,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.hibernate.ObjectNotFoundException;
+import org.omnifaces.util.Faces;
 
 /**
  *
@@ -832,9 +834,27 @@ public class RelatorioBean implements Serializable {
 //    }
 
     public void buscarPorData() {
+
         try {
+//            AutenticacaoBean auth = (AutenticacaoBean) Faces.getSessionAttribute("MBAutenticacao");
+//            Usuario usuario = auth.getUsuarioAutenticado();
             RelatorioDAO rdao = new RelatorioDAO();
             relatorios = rdao.listarPorData(dataPesquisa);
+//
+//            if (usuario.getCod_Categoria() == 'U') {
+////                relatorios.clear();
+//
+//                for (Relatorio rel : relatorios) {
+//
+//                    if (rel.getAluno().getPessoa().getId_Pessoa() == usuario.getPessoa().getId_Pessoa()) {
+//                    } else {
+//                        relatorios.remove(rel);
+//                       
+//                    }
+//                }
+//
+//            }
+
         } catch (ObjectNotFoundException e) {
             JSFUtil.enviarMensagemErro("Nenhum relatório cadastrado com a data informada");
             e.printStackTrace();

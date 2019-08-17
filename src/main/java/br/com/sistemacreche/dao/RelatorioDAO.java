@@ -6,6 +6,7 @@
 package br.com.sistemacreche.dao;
 
 import br.com.sistemacreche.domain.Relatorio;
+import br.com.sistemacreche.domain.Usuario;
 import br.com.sistemacreche.util.HibernateUtil;
 import java.util.Date;
 import java.util.List;
@@ -171,4 +172,29 @@ public class RelatorioDAO {
         return relatorios;
 
     }
+//    public List<Relatorio> listarPorData(Date data, Usuario usuario) {
+//
+//        String hql = "FROM Relatorio AS relatorio \n"
+//                + "inner join relatorio.aluno AS aluno \n"  
+//                + "WHERE relatorio.Data_Rel like :Data_Rel AND aluno.pessoa.id_Pessoa like :id_Pessoa";
+//
+//        Session sessao = HibernateUtil.getSessionFactory().openSession(); //inicia a conexão com o banco
+//        List<Relatorio> relatorios = null;
+//
+//        try {
+//            relatorios = sessao.createQuery(hql).setParameter("Data_Rel", data)
+//                                                .setParameter("id_Pessoa", usuario.getPessoa().getId_Pessoa()).list();
+//
+////            Query consulta = sessao.getNamedQuery("Relatorio.listarPorData"); //Executa query de listar por data
+////            consulta.setDate("Data_Rel", data);
+////            relatorios = consulta.list();
+//        } catch (RuntimeException e) {
+//            throw e;
+//
+//        } finally {
+//            sessao.close();
+//        }
+//        return relatorios;
+//
+//    }
 }

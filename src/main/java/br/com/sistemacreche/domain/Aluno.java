@@ -7,7 +7,6 @@ package br.com.sistemacreche.domain;
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,13 +15,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.swing.text.MaskFormatter;
 
 /**
@@ -30,14 +26,18 @@ import javax.swing.text.MaskFormatter;
  * @author Dmarcelino
  */
 @Entity
-@Table(name = "Aluno")
 @NamedQueries({
     @NamedQuery(name = "Aluno.listar", query = "SELECT aluno FROM Aluno aluno")
     ,
     @NamedQuery(name = "Aluno.buscarPorMat", query = "SELECT aluno FROM Aluno aluno WHERE aluno.Matricula_Aluno = :Matricula_Aluno")})
 public class Aluno implements Serializable {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     @Column(name = "Matricula_Aluno", nullable = false)
     private long Matricula_Aluno;
@@ -167,29 +167,32 @@ public class Aluno implements Serializable {
         return "Aluno{" + "Matricula_Aluno=" + Matricula_Aluno + ", Nome_Mae=" + Nome_Mae + ", Cpf_Mae=" + Cpf_Mae + ", nome_pai=" + nome_pai + ", Cpf_Pai=" + Cpf_Pai + ", Rest_Alimentar=" + Rest_Alimentar + ", pessoa=" + pessoa + ", turno=" + turno + '}';
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + (int) (this.Matricula_Aluno ^ (this.Matricula_Aluno >>> 32));
-        return hash;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (Matricula_Aluno ^ (Matricula_Aluno >>> 32));
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Aluno other = (Aluno) obj;
-        if (this.Matricula_Aluno != other.Matricula_Aluno) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Aluno other = (Aluno) obj;
+		if (Matricula_Aluno != other.Matricula_Aluno)
+			return false;
+		return true;
+	}
+
+    
+
+
+    
+    
 
 }
